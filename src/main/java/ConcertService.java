@@ -1,4 +1,4 @@
-public class ConcertController {
+public class ConcertService {
     private  ConcertRepository repository = new ConcertRepository();
 
     public void displayConcerts() {

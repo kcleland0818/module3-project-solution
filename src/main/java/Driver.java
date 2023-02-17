@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
-public class Main {
+public class Driver {
 
     public static void main(String[] args) {
-        ConcertController controller = new ConcertController();
+        ConcertService service = new ConcertService();
         Scanner scanner = new Scanner(System.in);
         String prompt = "Select an action: d=display, p=purchase, w=waitlist, q=quit: ";
         String action;
@@ -16,15 +16,15 @@ public class Main {
         while (!action.equals("q")) {
             switch (action) {
                 case "d":
-                    controller.displayConcerts();
+                    service.displayConcerts();
                     break;
                 case "p":
                     System.out.println("Enter the artist name:");
-                    controller.purchaseTicket( scanner.nextLine() );
+                    service.purchaseTicket( scanner.nextLine() );
                     break;
                 case "w":
                     System.out.println("Enter the artist name:");
-                    controller.addToWaitlist( scanner.nextLine() );
+                    service.addToWaitlist( scanner.nextLine() );
                     break;
                 default:
                     System.out.println("Invalid choice: " + action);
