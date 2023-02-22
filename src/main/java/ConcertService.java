@@ -1,16 +1,31 @@
 public class ConcertService {
-    private  ConcertRepository repository = new ConcertRepository();
+    // hardcode size 3
+    private  ConcertRepository repository = new ConcertRepository(3);
 
+    public void add(String artist, int available) {
+        Concert concert = repository.findByArtist(artist);
+        if (concert == null) {
+            if (repository.add(new Concert(artist, available))) {
+                System.out.println("Added concert");
+            }
+            else {
+                System.out.println("Unable to add concert");
+            }
+        }
+        else {
+            System.out.println("Unable to add concert");
+        }
+    }
     public void displayConcerts() {
-        for (Concert next : repository.findAll()) {
-            System.out.println(next);
+        for (int i=0; i<repository.getCurrentSize(); i++) {
+            System.out.println(repository.get(i));
         }
     }
 
     public void purchaseTicket(String artist) {
         Concert concert = repository.findByArtist(artist);
         if (concert == null) {
-            System.out.printf("No concerts for %s%n", artist);
+            System.out.printf("No concert for %s%n", artist);
         }
         else {
             boolean success = concert.purchaseTicket();
@@ -26,11 +41,12 @@ public class ConcertService {
     public void addToWaitlist(String artist) {
         Concert concert = repository.findByArtist(artist);
         if (concert == null) {
-            System.out.printf("No concerts for %s%n", artist);
+            System.out.printf("No concert for %s%n", artist);
         }
         else {
             concert.addToWaitlist();
             System.out.println("Added to waitlist");
         }
     }
+
 }

@@ -1,12 +1,11 @@
 public class Concert {
     private String artist;
-    private int tickets;
+    private int available;
     private int waitlist;
 
-    public Concert(String artist, int tickets, int waitlist) {
+    public Concert(String artist, int available) {
         this.artist = artist;
-        this.tickets = tickets;
-        this.waitlist = waitlist;
+        this.available = available;
     }
 
     public String getArtist() {
@@ -14,7 +13,7 @@ public class Concert {
     }
 
     public int getTickets() {
-        return tickets;
+        return available;
     }
 
     public int getWaitlist() {
@@ -22,8 +21,8 @@ public class Concert {
     }
 
     public boolean purchaseTicket() {
-        if (tickets > 0) {
-            tickets--;
+        if (available > 0) {
+            available--;
             return true;
         } else {
             return false;
@@ -38,7 +37,7 @@ public class Concert {
     public String toString() {
         return "Concert{" +
                 "artist='" + artist + '\'' +
-                ", tickets=" + tickets +
+                ", available=" + available +
                 ", waitlist=" + waitlist +
                 '}';
     }

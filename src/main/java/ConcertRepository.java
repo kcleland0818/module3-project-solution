@@ -1,23 +1,38 @@
 public class ConcertRepository {
-    private Concert[] concertList;
+    private Concert[] concerts;
+    private int currentSize ;
 
-    public ConcertRepository() {
-        concertList = new Concert[] {
-            new Concert("Taylor Swift", 5, 10000),
-            new Concert("The Weeknd", 2, 5000),
-            new Concert("Harry Styles", 100, 1000)
-        };
+    public ConcertRepository(int maxSize) {
+        concerts = new Concert[maxSize];
     }
 
-    public Concert[] findAll() {
-        return concertList;
+    public int getCurrentSize() { return currentSize;}
+
+    public Concert get(int i) {
+        if (i >= 0 && i <currentSize) {
+            return concerts[i];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public boolean add(Concert concert) {
+        if (currentSize < concerts.length) {
+            concerts[currentSize] = concert;
+            currentSize++;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public Concert findByArtist(String artist) {
-        artist = artist.toLowerCase();
-        for (Concert concert : concertList) {
-            if (concert.getArtist().toLowerCase().equals(artist)) {
-                return concert;
+        String lowerCaseArtist = artist.toLowerCase();
+        for (int i=0; i<currentSize; i++) {
+            if (concerts[i].getArtist().toLowerCase().equals(lowerCaseArtist)) {
+                return concerts[i];
             }
         }
         return null;
