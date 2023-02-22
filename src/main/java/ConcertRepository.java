@@ -1,4 +1,5 @@
 public class ConcertRepository {
+
     private Concert[] concerts;
     private int currentSize ;
 
@@ -8,9 +9,10 @@ public class ConcertRepository {
 
     public int getCurrentSize() { return currentSize;}
 
-    public Concert get(int i) {
-        if (i >= 0 && i <currentSize) {
-            return concerts[i];
+    // Return null if out of bounds (versus throwing exception)
+    public Concert get(int index) {
+        if (index >= 0 && index <currentSize) {
+            return concerts[index];
         }
         else {
             return null;
@@ -28,10 +30,10 @@ public class ConcertRepository {
         }
     }
 
-    public Concert findByArtist(String artist) {
-        String lowerCaseArtist = artist.toLowerCase();
+    public Concert findByPerformer(String performer) {
+        String lowerCaseName = performer.toLowerCase();
         for (int i=0; i<currentSize; i++) {
-            if (concerts[i].getArtist().toLowerCase().equals(lowerCaseArtist)) {
+            if (concerts[i].getPerformer().toLowerCase().equals(lowerCaseName)) {
                 return concerts[i];
             }
         }

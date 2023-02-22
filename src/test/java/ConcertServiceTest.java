@@ -26,6 +26,29 @@ class ConcertServiceTest {
     }
 
     @Test
+    void addFull() {
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("The Weeknd", 5000);
+        concertService.addConcert("Harry Styles", 599);
+        // Array size 3, can't add any more
+        concertService.addConcert("Another Singer", 100);
+        assertEquals("Added concert\n" +
+                        "Added concert\n" +
+                        "Added concert\n" +
+                        "Unable to add concert",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void duplicateAdd() {
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("Taylor Swift" , 200);
+        assertEquals("Added concert\n" +
+                        "Unable to add concert",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
     void displayEmpty() {
         concertService.displayConcerts();
         assertEquals("", outputStreamCaptor.toString().trim());
@@ -33,8 +56,8 @@ class ConcertServiceTest {
 
     @Test
     void displayNonEmpty() {
-        concertService.add("Taylor Swift" , 100);
-        concertService.add("The Weeknd", 5000);
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("The Weeknd", 5000);
         concertService.displayConcerts();
         assertEquals("Added concert\n" +
                      "Added concert\n" +
@@ -43,32 +66,11 @@ class ConcertServiceTest {
                      outputStreamCaptor.toString().trim());
     }
 
-    @Test
-    void addFull() {
-        concertService.add("Taylor Swift" , 100);
-        concertService.add("The Weeknd", 5000);
-        concertService.add("Harry Styles", 599);
-        // Array size 3, can't add any more
-        concertService.add("Another Singer", 100);
-        assertEquals("Added concert\n" +
-                     "Added concert\n" +
-                     "Added concert\n" +
-                     "Unable to add concert",
-                outputStreamCaptor.toString().trim());
-    }
 
-    @Test
-    void duplicateAdd() {
-        concertService.add("Taylor Swift" , 100);
-        concertService.add("Taylor Swift" , 200);
-        assertEquals("Added concert\n" +
-                     "Unable to add concert",
-                outputStreamCaptor.toString().trim());
-    }
 
     @Test
     void purchaseTicket() {
-        concertService.add("Taylor Swift" , 3);
+        concertService.addConcert("Taylor Swift" , 3);
         concertService.purchaseTicket("Taylor Swift");
         concertService.purchaseTicket("Taylor Swift");
         concertService.purchaseTicket("Taylor Swift");
@@ -84,7 +86,7 @@ class ConcertServiceTest {
 
     @Test
     void purchaseTicketUnknownArtist() {
-        concertService.add("Taylor Swift" , 1000);
+        concertService.addConcert("Taylor Swift" , 1000);
         concertService.purchaseTicket("Unknown Singer");
         assertEquals("Added concert\n" +
                       "No concert for Unknown Singer",
@@ -93,8 +95,8 @@ class ConcertServiceTest {
 
     @Test
     void addToWaitlist() {
-        concertService.add("Taylor Swift" , 100);
-        concertService.add("The Weeknd", 5000);
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("The Weeknd", 5000);
         concertService.addToWaitlist("Taylor Swift");
         concertService.addToWaitlist("Taylor Swift");
         concertService.addToWaitlist("The Weeknd");

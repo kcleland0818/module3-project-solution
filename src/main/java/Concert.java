@@ -1,18 +1,18 @@
 public class Concert {
-    private String artist;
+    private String performer;
     private int available;
     private int waitlist;
 
-    public Concert(String artist, int available) {
-        this.artist = artist;
+    public Concert(String performer, int available) {
+        this.performer = performer;
         this.available = available;
     }
 
-    public String getArtist() {
-        return artist;
+    public String getPerformer() {
+        return performer;
     }
 
-    public int getTickets() {
+    public int getAvailable() {
         return available;
     }
 
@@ -36,7 +36,7 @@ public class Concert {
     @Override
     public String toString() {
         return "Concert{" +
-                "artist='" + artist + '\'' +
+                "performer='" + performer + '\'' +
                 ", available=" + available +
                 ", waitlist=" + waitlist +
                 '}';

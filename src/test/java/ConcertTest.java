@@ -9,35 +9,43 @@ class ConcertTest {
 
     @BeforeEach
     void setup() {
-         c1 = new Concert("Artist1", 10);
-         c2 = new Concert("Artist2", 1);
+         c1 = new Concert("The Weeknd", 10);
+         c2 = new Concert("Harry Styles", 2);
     }
 
     @Test
     void constructor() {
-        assertEquals("Artist1", c1.getArtist());
-        assertEquals(10, c1.getTickets());
+        assertEquals("The Weeknd", c1.getPerformer());
+        assertEquals(10, c1.getAvailable());
         assertEquals(0, c1.getWaitlist());
 
-        assertEquals("Artist2", c2.getArtist());
-        assertEquals(1, c2.getTickets());
+        assertEquals("Harry Styles", c2.getPerformer());
+        assertEquals(2, c2.getAvailable());
         assertEquals(0, c2.getWaitlist());
     }
 
     @Test
-    void purchaseTicket() {
-        assertEquals(10, c1.getTickets());
-        assertTrue(c1.purchaseTicket());
-        assertEquals(9, c1.getTickets());
-        assertTrue(c1.purchaseTicket());
-        assertEquals(8, c1.getTickets());
+    void testToString() {
+        assertEquals("Concert{performer='The Weeknd', available=10, waitlist=0}", c1.toString());
+        assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0}", c2.toString());
+    }
 
-        assertEquals(1, c2.getTickets());
+    @Test
+    void purchaseTicket() {
+        assertEquals(10, c1.getAvailable());
+        assertTrue(c1.purchaseTicket());
+        assertEquals(9, c1.getAvailable());
+        assertTrue(c1.purchaseTicket());
+        assertEquals(8, c1.getAvailable());
+
+        assertEquals(2, c2.getAvailable());
         assertTrue(c2.purchaseTicket());
-        assertEquals(0, c2.getTickets());
+        assertEquals(1, c2.getAvailable());
+        assertTrue(c2.purchaseTicket());
+        assertEquals(0, c2.getAvailable());
         //no tickets left, remain at 0
         assertFalse(c2.purchaseTicket());
-        assertEquals(0, c2.getTickets());
+        assertEquals(0, c2.getAvailable());
     }
 
     @Test
