@@ -1,4 +1,5 @@
 public class Concert {
+
     private String performer;
     private int available;
     private int waitlist;

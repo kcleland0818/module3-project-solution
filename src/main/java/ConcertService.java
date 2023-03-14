@@ -1,6 +1,8 @@
+import java.util.List;
+
 public class ConcertService {
-    // hardcode size 3
-    private  ConcertRepository repository = new ConcertRepository(3);
+
+    private  ConcertRepository repository = new ConcertRepository();
 
     public void addConcert(String performer, int available) {
         Concert concert = repository.findByPerformer(performer);
@@ -14,12 +16,13 @@ public class ConcertService {
 
         }
         else {
-            System.out.println("Unable to add concert");
+            System.out.printf("Concert with %s already exists. Unable to add concert%n", performer);
         }
     }
     public void displayConcerts() {
-        for (int i=0; i<repository.getCurrentSize(); i++) {
-            System.out.println(repository.get(i));
+        List<Concert> concerts = repository.getAllConcerts();
+        for (Concert concert : concerts) {
+            System.out.println(concert);
         }
     }
 
