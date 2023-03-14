@@ -27,7 +27,6 @@ class ConcertRepositoryTest {
         Concert c = repository.get(0);
         assertEquals("Artist0", c.getPerformer());
         assertEquals(1000, c.getAvailable());
-        assertEquals(0, c.getPerformer());
 
     }
 

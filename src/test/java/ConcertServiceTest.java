@@ -61,8 +61,8 @@ class ConcertServiceTest {
         concertService.displayConcerts();
         assertEquals("Added concert\n" +
                      "Added concert\n" +
-                     "Concert{artist='Taylor Swift', available=100, waitlist=0}\n" +
-                     "Concert{artist='The Weeknd', available=5000, waitlist=0}",
+                     "Concert{performer='Taylor Swift', available=100, waitlist=0}\n" +
+                     "Concert{performer='The Weeknd', available=5000, waitlist=0}",
                      outputStreamCaptor.toString().trim());
     }
 
