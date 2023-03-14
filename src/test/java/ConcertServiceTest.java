@@ -26,25 +26,11 @@ class ConcertServiceTest {
     }
 
     @Test
-    void addFull() {
-        concertService.addConcert("Taylor Swift" , 100);
-        concertService.addConcert("The Weeknd", 5000);
-        concertService.addConcert("Harry Styles", 599);
-        // Array size 3, can't add any more
-        concertService.addConcert("Another Singer", 100);
-        assertEquals("Added concert\n" +
-                        "Added concert\n" +
-                        "Added concert\n" +
-                        "Unable to add concert",
-                outputStreamCaptor.toString().trim());
-    }
-
-    @Test
     void duplicateAdd() {
         concertService.addConcert("Taylor Swift" , 100);
         concertService.addConcert("Taylor Swift" , 200);
         assertEquals("Added concert\n" +
-                        "Unable to add concert",
+                        "Concert with Taylor Swift already exists. Unable to add concert",
                 outputStreamCaptor.toString().trim());
     }
 

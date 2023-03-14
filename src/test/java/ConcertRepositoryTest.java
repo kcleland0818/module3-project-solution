@@ -1,27 +1,31 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConcertRepositoryTest {
 
+    private ConcertRepository repository;
+
+    @BeforeEach
+    void setUp() {
+        repository = new ConcertRepository();
+    }
+
     @Test
     void constructor() {
-        // repository can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
 
         // current size is 0 since no concerts have been added
-        assertEquals(0, repository.getCurrentSize());
+        assertEquals(0, repository.getAllConcerts().size());
     }
 
     @Test
     void addGet1() {
-        // repository can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
-        assertEquals(0, repository.getCurrentSize());
+        assertEquals(0, repository.getAllConcerts().size());
 
         // add a concert
         assertTrue(repository.add(new Concert("Artist0", 1000)));
-        assertEquals(1, repository.getCurrentSize());
+        assertEquals(1, repository.getAllConcerts().size());
 
         // retrieve the concert using index 0
         Concert c = repository.get(0);
@@ -31,10 +35,8 @@ class ConcertRepositoryTest {
     }
 
     @Test
-    void addget5() {
-        // repository can hold up to 5 concerts
-        ConcertRepository repository = new ConcertRepository(5);
-        assertEquals(0, repository.getCurrentSize());
+    void addGet5() {
+        assertEquals(0, repository.getAllConcerts().size());
 
         // add 5 concerts
         for (int i = 0; i < 5; i++) {
@@ -45,26 +47,20 @@ class ConcertRepositoryTest {
             assertNotNull(repository.get(i));
 
             // confirm the current size
-            assertEquals(i + 1, repository.getCurrentSize());
+            assertEquals(i + 1, repository.getAllConcerts().size());
         }
 
-        // array is full, can't add another concert
-        assertFalse(repository.add(new Concert("Another artist", 100)));
-
         // confirm the size did not increase
-        assertEquals(5, repository.getCurrentSize());
+        assertEquals(5, repository.getAllConcerts().size());
     }
 
     @Test
     void getConcertState() {
-        // array can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
-
         // add 3 concerts
         assertTrue(repository.add(new Concert("The Weeknd", 1000)));
         assertTrue(repository.add(new Concert("Taylor Swift", 500)));
         assertTrue(repository.add(new Concert("Harry Styles", 20000)));
-        assertEquals(3, repository.getCurrentSize());
+        assertEquals(3, repository.getAllConcerts().size());
 
         // confirm each concert was inserted in the correct array position
         assertEquals("The Weeknd", repository.get(0).getPerformer());
@@ -74,8 +70,6 @@ class ConcertRepositoryTest {
 
     @Test
     public void getOutOfBounds() {
-        // array can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
         assertTrue(repository.add(new Concert("artist1", 1000)));
         assertTrue(repository.add(new Concert("artist2", 1000)));
         assertTrue(repository.add(new Concert("artist3", 1000)));
@@ -88,8 +82,6 @@ class ConcertRepositoryTest {
 
     @Test
     void findByPerformer() {
-        ConcertRepository repository = new ConcertRepository(2);
-
         repository.add(new Concert("Taylor Swift", 1000));
         repository.add(new Concert("The Weeknd", 500));
 
@@ -111,8 +103,6 @@ class ConcertRepositoryTest {
 
     @Test
     void caseInsensitiveFind() {
-        ConcertRepository repository = new ConcertRepository(2);
-
         repository.add(new Concert("Taylor Swift", 1000));
         repository.add(new Concert("The Weeknd", 500));
 
