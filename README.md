@@ -1,4 +1,60 @@
-# Module-2 Project
+# Module 3 Project
+
+## What Changed
+
+- Add the Ticket abstract class and subclasses to the project
+- Replaced the Array of Concerts with a List of Concerts
+- Add a LocalDate to the Concert class
+- Integrated the Ticket with Concert
+  - Changed Concert::purchaseTicket() to return an int with the ticket number
+  - When adding a concert, you have to add a concert date.
+    - Change in the ConcertService to handle this.
+    - Change in the Driver to get a concert date from the user.
+      - Validate the date provided.
+  - Changed ConcertService::purchaseTicket to take in a performer, isStudent, and a purchaseDate.
+    - Created a private method in the ConcertService class to help determine if a ticket should be purchased.
+      - If the purchaseDate is after the concertDate, then you cannot buy a ticket.
+      - Call Concert::purchaseTicket() and see if you get a valid ticket number (positive int) back.
+      - Determine which type of ticket the user will buy:
+        - If it is a student, then purchase a student ticket for $25
+        - If it is a walk-up (check if purchaseDate and concertDate are equal), then purchase a walk-up ticket for $50
+        - If it is an advance ticket, then determine how far in advance the ticket is being bought
+          - I used ChronoUnit.DAYS.between() but students can use the minus() method too.
+            - Will provide hint in instructions.
+          - If it is more than 10 days in advance or more, then purchase an advance ticket for $30
+          - Otherwise, purchase an advance ticket for $40
+    - Update the Driver class appropriately to ask if the user is a student and when they will be purchasing the ticket
+      - Prompt for the purchaseDate is to avoid unit testing issues and other issues with using LocalDate.now()
+      - Validate the date provided
+
+Design Decisions:
+
+- I wanted to put a List or Array of Tickets in the Concert class
+  - BUT then I'd probably have to initialize the array or list with the number of tickets and "pop" a ticket off when
+    "purchased".
+  - Seemed like it might have added an extra layer of complexity? Business logic might have had to go in the Concert
+    class then rather than the service class.
+- So instead, I decided to have the Concert class return a ticketNumber based off of availability of tickets (available
+  is still an integer instance variable).
+  - This in turn allowed me to put more business logic in the service class.
+- Let the LocalDates speak for themselves in determining what kind of ticket should be bought RATHER than asking the
+  user for what type of ticket they would like to buy.
+  - Avoids complexity in the Driver class.
+  - More practice with dates
+
+Questions:
+
+- Complexity: is this too complex for students? How do we have students approach this? What starter code, if any do we
+  provide?
+  - My opinion is the integration might be the "hardest" part for students, but that also gives them really good
+    real-world practice since they most likely will integrate features into existing codebases on the job, rather than
+    writing a codebase from scratch.
+- UML: A concert "has" tickets but because I did not add an array or list of Ticket objects to the class, can we still
+  show that relationship?
+- Stretch goal of a Concert Venue: My opinion is the stretch goal here is A LOT on students. Even if we did add it, I
+  doubt students would implement it. (Assuming most students do the minimum required work anyway)
+
+## Below is Module 2 Instructions from before
 
 ## Learning Goals
 
