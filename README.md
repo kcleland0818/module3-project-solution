@@ -432,8 +432,8 @@ The method does not return a value.
   actual performer name, if there is no such concert.
 - If there is a concert for the performer, call the `purchaseTicket` method on the given concert
   object.  Test the result returned from `purchaseTicket`.
-  - Print "Ticket purchased" if the `purchaseTicket` method returns `true`.
-  - Print "Ticket unavailable" if the `purchaseTicket` method returns `false`. 
+  - Print "ticket.Ticket purchased" if the `purchaseTicket` method returns `true`.
+  - Print "ticket.Ticket unavailable" if the `purchaseTicket` method returns `false`. 
 
 (7) Edit the `ConcertServiceTest` class to add Junit tests:
 
@@ -447,10 +447,10 @@ void purchaseTicket() {
     // sold out, ticket unavailable
     concertService.purchaseTicket("Taylor Swift");
     assertEquals("Added concert\n" +
-                 "Ticket purchased\n" +
-                 "Ticket purchased\n" +
-                 "Ticket purchased\n" +
-                 "Ticket unavailable",
+                 "ticket.Ticket purchased\n" +
+                 "ticket.Ticket purchased\n" +
+                 "ticket.Ticket purchased\n" +
+                 "ticket.Ticket unavailable",
             outputStreamCaptor.toString().trim());
 }
 
@@ -587,7 +587,7 @@ Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=ad
 p
 Enter the performer's name:
 The Weeknd
-Ticket purchased
+ticket.Ticket purchased
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
 Concert{performer='Taylor Swift', available=1000, waitlist=0}
@@ -596,7 +596,7 @@ Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=ad
 p
 Enter the performer's name:
 The Weeknd
-Ticket purchased
+ticket.Ticket purchased
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
 Concert{performer='Taylor Swift', available=1000, waitlist=0}
@@ -605,7 +605,7 @@ Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=ad
 p
 Enter the performer's name:
 The Weeknd
-Ticket unavailable
+ticket.Ticket unavailable
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
 Concert{performer='Taylor Swift', available=1000, waitlist=0}

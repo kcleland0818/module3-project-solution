@@ -1,3 +1,5 @@
+package ticket;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,7 +12,7 @@ public class AdvanceTicketTest {
         assertEquals(1, ticket.getTicketNumber());
         assertEquals(10, ticket.getDaysBeforeConcert());
         assertEquals(30.0, ticket.getPrice());
-        assertEquals("Ticket Number = 1, Price = 30.00", ticket.toString());
+        assertEquals("ticket.Ticket Number = 1, Price = 30.00", ticket.toString());
     }
 
     @Test

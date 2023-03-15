@@ -1,3 +1,5 @@
+package ticket;
+
 public class StudentTicket extends WalkupTicket {
 
     public StudentTicket(int ticketNumber) {

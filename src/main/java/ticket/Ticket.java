@@ -1,4 +1,4 @@
-import java.time.LocalDate;
+package ticket;
 
 public abstract class Ticket {
 

@@ -1,3 +1,5 @@
+package ticket;
+
 public class AdvanceTicket extends Ticket {
 
     private final int daysBeforeConcert;
@@ -17,7 +19,7 @@ public class AdvanceTicket extends Ticket {
         if (daysBeforeConcert >= 10) {
             return 30.0;
         } else {
-            // Ticket is purchased fewer than 10 days before the concert, cost $40
+            // ticket.Ticket is purchased fewer than 10 days before the concert, cost $40
             return 40.0;
         }
     }

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,13 +63,13 @@ class ConcertServiceTest {
         // sold out, ticket unavailable
         concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
-                        "Ticket Number = 3, Price = 50.00\n" +
-                        "Ticket purchased\n" +
-                        "Ticket Number = 2, Price = 50.00\n" +
-                        "Ticket purchased\n" +
-                        "Ticket Number = 1, Price = 50.00\n" +
-                        "Ticket purchased\n" +
-                        "Ticket unavailable",
+                        "ticket.Ticket Number = 3, Price = 50.00\n" +
+                        "ticket.Ticket purchased\n" +
+                        "ticket.Ticket Number = 2, Price = 50.00\n" +
+                        "ticket.Ticket purchased\n" +
+                        "ticket.Ticket Number = 1, Price = 50.00\n" +
+                        "ticket.Ticket purchased\n" +
+                        "ticket.Ticket unavailable",
                 outputStreamCaptor.toString().trim());
     }
 
@@ -88,8 +87,8 @@ class ConcertServiceTest {
         concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
         concertService.purchaseTicket("Taylor Swift", true, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
-                        "Ticket Number = 3, Price = 25.00\n" +
-                        "Ticket purchased",
+                        "ticket.Ticket Number = 3, Price = 25.00\n" +
+                        "ticket.Ticket purchased",
                 outputStreamCaptor.toString().trim());
     }
 
@@ -98,8 +97,8 @@ class ConcertServiceTest {
         concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
         concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 14));
         assertEquals("Added concert\n" +
-                        "Ticket Number = 3, Price = 40.00\n" +
-                        "Ticket purchased",
+                        "ticket.Ticket Number = 3, Price = 40.00\n" +
+                        "ticket.Ticket purchased",
                 outputStreamCaptor.toString().trim());
     }
 
@@ -108,8 +107,8 @@ class ConcertServiceTest {
         concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
         concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 5));
         assertEquals("Added concert\n" +
-                        "Ticket Number = 3, Price = 30.00\n" +
-                        "Ticket purchased",
+                        "ticket.Ticket Number = 3, Price = 30.00\n" +
+                        "ticket.Ticket purchased",
                 outputStreamCaptor.toString().trim());
     }
 
@@ -118,8 +117,8 @@ class ConcertServiceTest {
         concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
         concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 1));
         assertEquals("Added concert\n" +
-                        "Ticket Number = 3, Price = 30.00\n" +
-                        "Ticket purchased",
+                        "ticket.Ticket Number = 3, Price = 30.00\n" +
+                        "ticket.Ticket purchased",
                 outputStreamCaptor.toString().trim());
     }
 
