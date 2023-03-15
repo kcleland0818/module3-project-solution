@@ -16,13 +16,13 @@ in this module.
 
 ![uml module2 project](https://curriculum-content.s3.amazonaws.com/6676/java-multipleclasses/uml_module2_project.png)
 
-## Task #1 - `Concert` class
+## Task #1 - `concert.Concert` class
 
-The `Concert` class encapsulates data about the 
+The `concert.Concert` class encapsulates data about the 
 artist performing at a music concert, the number of tickets
 available for purchase, and the number of people on the wait list.
 
-(1) Add instance variables in the following order to the `Concert` class:
+(1) Add instance variables in the following order to the `concert.Concert` class:
 
 - A String named `performer`.
 - An int named `available`.
@@ -36,43 +36,45 @@ should be initialized to a default value of 0.
 
 (4) Use IntelliJ to generate a `toString()` method, selecting all fields.
 
-(5) Edit the `ConcertTest` Junit test class to test the constructor, getters,
+(5) Edit the `concert.ConcertTest` Junit test class to test the constructor, getters,
 and `toString` methods:
 
 ```java
-class ConcertTest {
+import concert.Concert;
 
-  private Concert c1, c2;
+class concert.ConcertTest {
 
-  @BeforeEach
-  void setup() {
-    c1 = new Concert("The Weeknd", 10);
-    c2 = new Concert("Harry Styles", 2);
-  }
+    private Concert c1, c2;
 
-  @Test
-  void constructor() {
-    assertEquals("The Weeknd", c1.getPerformer());
-    assertEquals(10, c1.getAvailable());
-    assertEquals(0, c1.getWaitlist());
+    @BeforeEach
+    void setup() {
+        c1 = new Concert("The Weeknd", 10);
+        c2 = new Concert("Harry Styles", 2);
+    }
 
-    assertEquals("Harry Styles", c2.getPerformer());
-    assertEquals(2, c2.getAvailable());
-    assertEquals(0, c2.getWaitlist());
-  }
+    @Test
+    void constructor() {
+        assertEquals("The Weeknd", c1.getPerformer());
+        assertEquals(10, c1.getAvailable());
+        assertEquals(0, c1.getWaitlist());
 
-  @Test
-  void testToString() {
-    assertEquals("Concert{performer='The Weeknd', available=10, waitlist=0}", c1.toString());
-    assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0}", c2.toString());
-  }
+        assertEquals("Harry Styles", c2.getPerformer());
+        assertEquals(2, c2.getAvailable());
+        assertEquals(0, c2.getWaitlist());
+    }
+
+    @Test
+    void testToString() {
+        assertEquals("concert.Concert{performer='The Weeknd', available=10, waitlist=0}", c1.toString());
+        assertEquals("concert.Concert{performer='Harry Styles', available=2, waitlist=0}", c2.toString());
+    }
 
 }
 ```
 
 Run the Junit tests to ensure the code passes the tests.
 
-Once you have that working, edit the `Concert` class to add the following methods:
+Once you have that working, edit the `concert.Concert` class to add the following methods:
 
 - A method named `purchaseTicket()` that takes no parameters and returns a `boolean`.
   - If the number of available tickets is positive, decrement the number
@@ -81,7 +83,7 @@ Once you have that working, edit the `Concert` class to add the following method
 - A method named `addtoWaitList()` that takes no parameters and does not return a value.
   - Increment the `waitlist` value by 1.
 
-Edit the `ConcertTest` Junit test class to add the following test methods.
+Edit the `concert.ConcertTest` Junit test class to add the following test methods.
 
 ```java
 @Test
@@ -118,32 +120,32 @@ void addToWaitlist() {
     }
 ```
 
-## Task #2 - `ConcertRepository` class
+## Task #2 - `concert.ConcertRepository` class
 
-The `ConcertRepository` class will use an array to
-encapsulate a collection of `Concert` class instances.
-The `ConcertRepository` class models a subset of
+The `concert.ConcertRepository` class will use an array to
+encapsulate a collection of `concert.Concert` class instances.
+The `concert.ConcertRepository` class models a subset of
 functionality found in the `ArrayList`
 class that is part of the Java Collections Framework.
 
 
-(1) Edit the `ConcertRepository` class to add two instance variables:
+(1) Edit the `concert.ConcertRepository` class to add two instance variables:
 
-- An array named `concerts` that stores `Concert` class instances.
-- An int named `currentSize` that stores the number of `Concert` objects
+- An array named `concerts` that stores `concert.Concert` class instances.
+- An int named `currentSize` that stores the number of `concert.Concert` objects
   that have been added to the array.  This value may differ from the array size,
   which represents the maximum number of concerts that may be added to the array.
 
 
-(2) Create a constructor for the `ConcertRepository` that takes one parameter named
+(2) Create a constructor for the `concert.ConcertRepository` that takes one parameter named
 `maxSize`.  The constructor should initialize the array size using the `maxSize` variable.
 Note that initially all elements in the array will be `null` since the array
-stores instances of the reference type  `Concert`.
+stores instances of the reference type  `concert.Concert`.
 
 (3) Generate a getter method for the `currentSize` instance variable named `getCurrentSize`.
 
 (4) Create a method named `add` that takes one parameter and returns a `boolean`.
-The parameter type should be `Concert`.  
+The parameter type should be `concert.Concert`.  
 
 - The `currentSize` instance variable represents the number of concerts that have
   been added to the array. Initially this value is 0.
@@ -153,16 +155,19 @@ The parameter type should be `Concert`.
 - If the array is already full, simply return `false` to indicate the concert
   could not be added to the repository.
 
-(5) Create a method named `get` that takes in int parameter and returns a `Concert` object.
-The method should return a `Concert` object using the parameter as the index
+(5) Create a method named `get` that takes in int parameter and returns a `concert.Concert` object.
+The method should return a `concert.Concert` object using the parameter as the index
 into the array, or return `null` if the index is out of bounds.  The method should not
 throw an exception.
 
-(6) Edit the `ConcertRepositoryTest` Junit class to test the constructor and methods:
+(6) Edit the `concert.ConcertRepositoryTest` Junit class to test the constructor and methods:
 
 ```java
 
-class ConcertRepositoryTest {
+import concert.Concert;
+import concert.ConcertRepository;
+
+class concert.ConcertRepositoryTest {
 
     @Test
     void constructor() {
@@ -180,7 +185,7 @@ class ConcertRepositoryTest {
         assertEquals(0, repository.getCurrentSize());
 
         // add a concert
-        assertTrue(repository.add(new Concert("Artist0" , 1000)));
+        assertTrue(repository.add(new Concert("Artist0", 1000)));
         assertEquals(1, repository.getCurrentSize());
 
         // retrieve the concert using index 0
@@ -198,9 +203,9 @@ class ConcertRepositoryTest {
         assertEquals(0, repository.getCurrentSize());
 
         // add 5 concerts
-        for (int i=0; i<5; i++) {
+        for (int i = 0; i < 5; i++) {
             // add the concert
-            assertTrue(repository.add(new Concert("Artist" + i, i*1000)));
+            assertTrue(repository.add(new Concert("Artist" + i, i * 1000)));
 
             // retrieve the concert using index i
             assertNotNull(repository.get(i));
@@ -250,14 +255,14 @@ class ConcertRepositoryTest {
 
 Run the Junit tests to ensure the code passes the tests.
 
-Once you have that working, edit the `ConcertRepository` class
+Once you have that working, edit the `concert.ConcertRepository` class
 to add a method named `findByPerformer` that takes one parameter, a string
-representing the name of the performer, and returns a `Concert`
+representing the name of the performer, and returns a `concert.Concert`
 object.  The method should iterate through the array looking for a concert
 having a matching performer name.
 
 *Be careful, the size of the array
-does not represent the number of `Concert` objects in the array, so some
+does not represent the number of `concert.Concert` objects in the array, so some
 array elements may be null.*  The method should return `null` if the
 repository does not contain a concert for that performer.
 
@@ -265,23 +270,23 @@ repository does not contain a concert for that performer.
 
 @Test
 void findByPerformer() {
-    ConcertRepository repository = new ConcertRepository(2);
+    concert.ConcertRepository repository = new concert.ConcertRepository(2);
   
-    repository.add(new Concert("Taylor Swift", 1000));
-    repository.add(new Concert("The Weeknd", 500));
+    repository.add(new concert.Concert("Taylor Swift", 1000));
+    repository.add(new concert.Concert("The Weeknd", 500));
   
-    Concert c1 = repository.findByPerformer("Taylor Swift");
+    concert.Concert c1 = repository.findByPerformer("Taylor Swift");
     assertEquals("Taylor Swift", c1.getPerformer());
     assertEquals(1000, c1.getAvailable());
     assertEquals(0, c1.getWaitlist());
   
-    Concert c2 = repository.findByPerformer("The Weeknd");
+    concert.Concert c2 = repository.findByPerformer("The Weeknd");
     assertEquals("The Weeknd", c2.getPerformer());
     assertEquals(500, c2.getAvailable());
     assertEquals(0, c2.getWaitlist());
   
     //unknown performer
-    Concert c3 = repository.findByPerformer("Unknown Singer");
+    concert.Concert c3 = repository.findByPerformer("Unknown Singer");
     assertNull(c3);
 
 }
@@ -290,24 +295,24 @@ void findByPerformer() {
 ## Optional Challenge - Case Insensitive Search
 
 
-Edit the  `findByPerformer` method in the `ConcertRepository` class
+Edit the  `findByPerformer` method in the `concert.ConcertRepository` class
 to perform a case-insensitive search using the
 performer name.  The method should ignore the case of the string
 based as a parameter as well as the string representing the
 performer name stored in the array.
 
-Add the following  method to the `ConcertRepositoryTest` class
+Add the following  method to the `concert.ConcertRepositoryTest` class
 to test the new functionality:
 
 ```java
 @Test
 void caseInsensitiveFind() {
-    ConcertRepository repository = new ConcertRepository(2);
+    concert.ConcertRepository repository = new concert.ConcertRepository(2);
   
-    repository.add(new Concert("Taylor Swift", 1000));
-    repository.add(new Concert("The Weeknd", 500));
+    repository.add(new concert.Concert("Taylor Swift", 1000));
+    repository.add(new concert.Concert("The Weeknd", 500));
   
-    Concert c1 = repository.findByPerformer("TAYLOR swift");
+    concert.Concert c1 = repository.findByPerformer("TAYLOR swift");
     assertEquals("Taylor Swift", c1.getPerformer());
     assertEquals(1000, c1.getAvailable());
     assertEquals(0, c1.getWaitlist());
@@ -315,18 +320,18 @@ void caseInsensitiveFind() {
 }
 ```
 
-## Task #3 - `ConcertService` class
+## Task #3 - `concert.ConcertService` class
 
-The `ConcertRepository` class encapsulates a collection of `Concert` objects
+The `concert.ConcertRepository` class encapsulates a collection of `concert.Concert` objects
 and provides methods to add a new concert, get a concert by index, and find
-a concert by performer name.  However, the `ConcertRepository`
+a concert by performer name.  However, the `concert.ConcertRepository`
 class does not provide business logic or input/output interaction
 with the user.    This will be handled in two additional classes:
 
 - The `Driver` class implements a command-line interface (CLI) to handle user input, repeatedly
   prompting the user with: "Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit:"
-- The `Driver` class will delegate the request to a `ConcertService` object.
-- The `ConcertService` class implements the business logic for the application.
+- The `Driver` class will delegate the request to a `concert.ConcertService` object.
+- The `concert.ConcertService` class implements the business logic for the application.
   - Adding a concert:
     - Print a success message if the concert is added to the repository.
     - Print an error message if the repository already contains a concert for that performer.
@@ -343,21 +348,21 @@ with the user.    This will be handled in two additional classes:
 
 
 
-The `Driver` class will use the `ConcertService` class to perform the
-actions requested by the user.  The `ConcertService` class in turn
-uses the `ConcertRepository` class to manage the actual storage of `Concert`
+The `Driver` class will use the `concert.ConcertService` class to perform the
+actions requested by the user.  The `concert.ConcertService` class in turn
+uses the `concert.ConcertRepository` class to manage the actual storage of `concert.Concert`
 objects in the array.
 
 ![uml module2 project](https://curriculum-content.s3.amazonaws.com/6676/java-multipleclasses/uml_module2_project.png)
 
-(1) Edit the `ConcertService` class to add an instance variable to reference an instance of `ConcertRepository`
+(1) Edit the `concert.ConcertService` class to add an instance variable to reference an instance of `concert.ConcertRepository`
 that stores a maximum of 3 concerts.
 
 ```java
-private  ConcertRepository repository = new ConcertRepository(3);
+private  concert.ConcertRepository repository = new concert.ConcertRepository(3);
 ```
 
-(2) Edit the `ConcertService` class to add a method named `addConcert` that takes two
+(2) Edit the `concert.ConcertService` class to add a method named `addConcert` that takes two
 parameters: the performer name and the number of available tickets.  The method does not return a value.
   - Call the `findByPerformer` method to test if a concert for that performer
   exists in the repository, and print "Unable to add concert" if one already does.
@@ -366,7 +371,7 @@ parameters: the performer name and the number of available tickets.  The method 
     - Print "Added concert" if the `add` method returns `true`.
     - Print "Unable to add concert" if the `add` method returns `false`.
 
-(3) Edit `ConcertServiceTest` to add two methods to test the new functionality:
+(3) Edit `concert.ConcertServiceTest` to add two methods to test the new functionality:
 
 ```java
 @Test
@@ -395,11 +400,11 @@ void duplicateAdd() {
 
 Run the Junit test and confirm your code.
 
-(4) Edit the `ConcertService` class to
+(4) Edit the `concert.ConcertService` class to
 add a method named `displayConcerts` that takes no parameters and returns no value.
 The method should call the repository `get` method to retrieve and print each concert in the repository.  
 
-(5) Edit `ConcertServiceTest` to add two methods to test the new functionality:
+(5) Edit `concert.ConcertServiceTest` to add two methods to test the new functionality:
 
 ```java
 @Test
@@ -415,15 +420,15 @@ void displayNonEmpty() {
     concertService.displayConcerts();
     assertEquals("Added concert\n" +
                  "Added concert\n" +
-                 "Concert{artist='Taylor Swift', available=100, waitlist=0}\n" +
-                 "Concert{artist='The Weeknd', available=5000, waitlist=0}",
+                 "concert.Concert{artist='Taylor Swift', available=100, waitlist=0}\n" +
+                 "concert.Concert{artist='The Weeknd', available=5000, waitlist=0}",
                  outputStreamCaptor.toString().trim());
 }
 ```
 
 Run the Junit tests and confirm your code.
 
-(6) Edit the `ConcertService` class to
+(6) Edit the `concert.ConcertService` class to
 add a method named `purchaseTicket`. The method takes one parameter, the performer name.
 The method does not return a value.
 
@@ -435,7 +440,7 @@ The method does not return a value.
   - Print "ticket.Ticket purchased" if the `purchaseTicket` method returns `true`.
   - Print "ticket.Ticket unavailable" if the `purchaseTicket` method returns `false`. 
 
-(7) Edit the `ConcertServiceTest` class to add Junit tests:
+(7) Edit the `concert.ConcertServiceTest` class to add Junit tests:
 
 ```java
 @Test
@@ -466,7 +471,7 @@ void purchaseTicketUnknownArtist() {
 
 Run the Junit tests and confirm your code.
 
-(8) Edit the `ConcertService` class to add a method `addToWaitlist` that takes
+(8) Edit the `concert.ConcertService` class to add a method `addToWaitlist` that takes
 one parameter, the performer name.  The method does not return a value.
 
 - Call the `findByPerformer` method to test if a concert for that performer
@@ -475,7 +480,7 @@ one parameter, the performer name.  The method does not return a value.
 - If there is a concert for the performer, call the `addToWaitlist` method on the given concert
   object and then print "Added to waitlist".
  
-(9) Edit the `ConcertServiceTest` class to add Junit tests:
+(9) Edit the `concert.ConcertServiceTest` class to add Junit tests:
 
 ```java
 @Test
@@ -504,6 +509,8 @@ void addToWaitlist() {
 Edit the `Driver` class as shown:
 
 ```java
+import concert.ConcertService;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -531,8 +538,7 @@ public class Driver {
                         int available = scanner.nextInt();
                         scanner.nextLine();  //consume the rest of the input
                         service.addConcert(performer, available);
-                    }
-                    catch (InputMismatchException e) {
+                    } catch (InputMismatchException e) {
                         System.out.println("Value was not an integer");
                     }
                 case "d":
@@ -540,11 +546,11 @@ public class Driver {
                     break;
                 case "p":
                     System.out.println("Enter the performer's name:");
-                    service.purchaseTicket( scanner.nextLine() );
+                    service.purchaseTicket(scanner.nextLine());
                     break;
                 case "w":
                     System.out.println("Enter the performer's name:");
-                    service.addToWaitlist( scanner.nextLine() );
+                    service.addToWaitlist(scanner.nextLine());
                     break;
                 default:
                     System.out.println("Invalid choice: " + action);
@@ -571,7 +577,7 @@ Enter the number of available tickets:
 Added concert
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=0}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 a
 Enter the performer's name:
@@ -581,8 +587,8 @@ Enter the number of available tickets:
 Added concert
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=0}
-Concert{performer='The Weeknd', available=2, waitlist=0}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
+concert.Concert{performer='The Weeknd', available=2, waitlist=0}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 p
 Enter the performer's name:
@@ -590,8 +596,8 @@ The Weeknd
 ticket.Ticket purchased
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=0}
-Concert{performer='The Weeknd', available=1, waitlist=0}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
+concert.Concert{performer='The Weeknd', available=1, waitlist=0}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 p
 Enter the performer's name:
@@ -599,8 +605,8 @@ The Weeknd
 ticket.Ticket purchased
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=0}
-Concert{performer='The Weeknd', available=0, waitlist=0}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
+concert.Concert{performer='The Weeknd', available=0, waitlist=0}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 p
 Enter the performer's name:
@@ -608,8 +614,8 @@ The Weeknd
 ticket.Ticket unavailable
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=0}
-Concert{performer='The Weeknd', available=0, waitlist=0}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
+concert.Concert{performer='The Weeknd', available=0, waitlist=0}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 p
 Enter the performer's name:
@@ -629,8 +635,8 @@ The Weeknd
 Added to waitlist
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=0}
-Concert{performer='The Weeknd', available=0, waitlist=1}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
+concert.Concert{performer='The Weeknd', available=0, waitlist=1}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 w
 Enter the performer's name:
@@ -638,8 +644,8 @@ Taylor Swift
 Added to waitlist
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=1}
-Concert{performer='The Weeknd', available=0, waitlist=1}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=1}
+concert.Concert{performer='The Weeknd', available=0, waitlist=1}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 w
 Enter the performer's name:
@@ -647,8 +653,8 @@ The band
 No concert for The band
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 d
-Concert{performer='Taylor Swift', available=1000, waitlist=1}
-Concert{performer='The Weeknd', available=0, waitlist=1}
+concert.Concert{performer='Taylor Swift', available=1000, waitlist=1}
+concert.Concert{performer='The Weeknd', available=0, waitlist=1}
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 q
 ```

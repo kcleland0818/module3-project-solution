@@ -1,5 +1,6 @@
+package concert;
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Concert {
 
@@ -51,7 +52,7 @@ public class Concert {
 
     @Override
     public String toString() {
-        return "Concert{" +
+        return "concert.Concert{" +
                 "performer='" + performer + '\'' +
                 ", available=" + available +
                 ", waitlist=" + waitlist +

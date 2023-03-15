@@ -1,3 +1,5 @@
+package concert;
+
 import ticket.AdvanceTicket;
 import ticket.StudentTicket;
 import ticket.Ticket;
@@ -23,7 +25,7 @@ public class ConcertService {
 
         }
         else {
-            System.out.printf("Concert with %s already exists. Unable to add concert%n", performer);
+            System.out.printf("concert.Concert with %s already exists. Unable to add concert%n", performer);
         }
     }
     public void displayConcerts() {

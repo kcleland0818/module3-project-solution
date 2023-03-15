@@ -1,3 +1,5 @@
+package concert;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ class ConcertServiceTest {
         concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
         concertService.addConcert("Taylor Swift" , 200, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
-                        "Concert with Taylor Swift already exists. Unable to add concert",
+                        "concert.Concert with Taylor Swift already exists. Unable to add concert",
                 outputStreamCaptor.toString().trim());
     }
 
@@ -47,8 +49,8 @@ class ConcertServiceTest {
         concertService.displayConcerts();
         assertEquals("Added concert\n" +
                      "Added concert\n" +
-                     "Concert{performer='Taylor Swift', available=100, waitlist=0, concertDate=2023-03-15}\n" +
-                     "Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-16}",
+                     "concert.Concert{performer='Taylor Swift', available=100, waitlist=0, concertDate=2023-03-15}\n" +
+                     "concert.Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-16}",
                      outputStreamCaptor.toString().trim());
     }
 
