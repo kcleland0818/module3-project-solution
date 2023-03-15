@@ -1,13 +1,14 @@
+import java.time.LocalDate;
 import java.util.List;
 
 public class ConcertService {
 
     private final ConcertRepository repository = new ConcertRepository();
 
-    public void addConcert(String performer, int available) {
+    public void addConcert(String performer, int available, LocalDate concertDate) {
         Concert concert = repository.findByPerformer(performer);
         if (concert == null) {
-            if (repository.add(new Concert(performer, available, "03/15/2023"))) {
+            if (repository.add(new Concert(performer, available, concertDate))) {
                 System.out.println("Added concert");
             }
             else {

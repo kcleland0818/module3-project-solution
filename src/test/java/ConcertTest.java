@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConcertTest {
@@ -9,13 +11,13 @@ class ConcertTest {
 
     @BeforeEach
     void setup() {
-         c1 = new Concert("The Weeknd", 10, "03/15/2023");
-         c2 = new Concert("Harry Styles", 2, "03/17/2023");
+         c1 = new Concert("The Weekend", 10, LocalDate.of(2023, 3, 15));
+         c2 = new Concert("Harry Styles", 2, LocalDate.of(2023, 3, 17));
     }
 
     @Test
     void constructor() {
-        assertEquals("The Weeknd", c1.getPerformer());
+        assertEquals("The Weekend", c1.getPerformer());
         assertEquals(10, c1.getAvailable());
         assertEquals(0, c1.getWaitlist());
 
@@ -26,7 +28,7 @@ class ConcertTest {
 
     @Test
     void testToString() {
-        assertEquals("Concert{performer='The Weeknd', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
+        assertEquals("Concert{performer='The Weekend', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
         assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0, concertDate=2023-03-17}", c2.toString());
     }
 

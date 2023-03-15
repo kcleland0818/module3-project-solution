@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,8 +28,8 @@ class ConcertServiceTest {
 
     @Test
     void duplicateAdd() {
-        concertService.addConcert("Taylor Swift" , 100);
-        concertService.addConcert("Taylor Swift" , 200);
+        concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+        concertService.addConcert("Taylor Swift" , 200, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
                         "Concert with Taylor Swift already exists. Unable to add concert",
                 outputStreamCaptor.toString().trim());
@@ -42,13 +43,13 @@ class ConcertServiceTest {
 
     @Test
     void displayNonEmpty() {
-        concertService.addConcert("Taylor Swift" , 100);
-        concertService.addConcert("The Weekend", 5000);
+        concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+        concertService.addConcert("The Weekend", 5000, LocalDate.of(2023, 3, 16));
         concertService.displayConcerts();
         assertEquals("Added concert\n" +
                      "Added concert\n" +
                      "Concert{performer='Taylor Swift', available=100, waitlist=0, concertDate=2023-03-15}\n" +
-                     "Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-15}",
+                     "Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-16}",
                      outputStreamCaptor.toString().trim());
     }
 
@@ -56,7 +57,7 @@ class ConcertServiceTest {
 
     @Test
     void purchaseTicket() {
-        concertService.addConcert("Taylor Swift" , 3);
+        concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
         concertService.purchaseTicket("Taylor Swift");
         concertService.purchaseTicket("Taylor Swift");
         concertService.purchaseTicket("Taylor Swift");
@@ -72,7 +73,7 @@ class ConcertServiceTest {
 
     @Test
     void purchaseTicketUnknownArtist() {
-        concertService.addConcert("Taylor Swift" , 1000);
+        concertService.addConcert("Taylor Swift" , 1000, LocalDate.of(2023, 3, 15));
         concertService.purchaseTicket("Unknown Singer");
         assertEquals("Added concert\n" +
                       "No concert for Unknown Singer",
@@ -81,8 +82,8 @@ class ConcertServiceTest {
 
     @Test
     void addToWaitlist() {
-        concertService.addConcert("Taylor Swift" , 100);
-        concertService.addConcert("The Weeknd", 5000);
+        concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+        concertService.addConcert("The Weeknd", 5000, LocalDate.of(2023, 3, 15));
         concertService.addToWaitlist("Taylor Swift");
         concertService.addToWaitlist("Taylor Swift");
         concertService.addToWaitlist("The Weeknd");

@@ -9,10 +9,10 @@ public class Concert {
 
     private LocalDate concertDate;
 
-    public Concert(String performer, int available, String concertDate) {
+    public Concert(String performer, int available, LocalDate concertDate) {
         this.performer = performer;
         this.available = available;
-        this.concertDate = LocalDate.parse(concertDate, DateTimeFormatter.ofPattern("MM/dd/uuuu"));
+        this.concertDate = concertDate;
     }
 
     public String getPerformer() {

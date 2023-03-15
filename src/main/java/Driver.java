@@ -1,3 +1,7 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -52,11 +56,21 @@ public class Driver {
         try {
             System.out.println("Enter the number of available tickets:");
             int available = scanner.nextInt();
-            scanner.nextLine();  //consume the rest of the input
-            service.addConcert(performer, available);
+            scanner.nextLine();    // Consume the rest of the input
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+            System.out.println("Enter a date for the concert in the format of MM/dd/uuuu:");
+            String concertDate = scanner.nextLine();
+
+            // Validate the date
+            LocalDate date = LocalDate.parse(concertDate, formatter);
+            service.addConcert(performer, available, date);
         }
         catch (InputMismatchException e) {
-            System.out.println("Value was not an integer");
+            System.out.println("Number of available tickets was not an integer");
+        } catch (DateTimeParseException e) {
+            System.out.println("Concert date was not a valid date");
         }
     }
 
