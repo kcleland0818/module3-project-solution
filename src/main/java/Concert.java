@@ -21,12 +21,19 @@ public class Concert {
         return waitlist;
     }
 
-    public boolean purchaseTicket() {
+    /**
+     * If there are still tickets available, return a positive integer with the ticket number
+     * If there are no tickets available, return a negative integer
+     * @return
+     */
+    public int purchaseTicket() {
         if (available > 0) {
+            int ticketNumber = available;
             available--;
-            return true;
+            return ticketNumber;
         } else {
-            return false;
+            // Return a negative number to represent a ticket could not be purchased
+            return -1;
         }
     }
 

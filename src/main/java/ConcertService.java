@@ -2,7 +2,7 @@ import java.util.List;
 
 public class ConcertService {
 
-    private  ConcertRepository repository = new ConcertRepository();
+    private final ConcertRepository repository = new ConcertRepository();
 
     public void addConcert(String performer, int available) {
         Concert concert = repository.findByPerformer(performer);
@@ -32,8 +32,8 @@ public class ConcertService {
             System.out.printf("No concert for %s%n", performer);
         }
         else {
-            boolean success = concert.purchaseTicket();
-            if (success) {
+            int ticketNumber = concert.purchaseTicket();
+            if (ticketNumber > 0) {
                 System.out.println("Ticket purchased");
             }
             else {

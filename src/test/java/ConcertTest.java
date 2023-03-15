@@ -33,18 +33,18 @@ class ConcertTest {
     @Test
     void purchaseTicket() {
         assertEquals(10, c1.getAvailable());
-        assertTrue(c1.purchaseTicket());
+        assertEquals(10, c1.purchaseTicket());
         assertEquals(9, c1.getAvailable());
-        assertTrue(c1.purchaseTicket());
+        assertEquals(9, c1.purchaseTicket());
         assertEquals(8, c1.getAvailable());
 
         assertEquals(2, c2.getAvailable());
-        assertTrue(c2.purchaseTicket());
+        assertEquals(2, c2.purchaseTicket());
         assertEquals(1, c2.getAvailable());
-        assertTrue(c2.purchaseTicket());
+        assertEquals(1, c2.purchaseTicket());
         assertEquals(0, c2.getAvailable());
         //no tickets left, remain at 0
-        assertFalse(c2.purchaseTicket());
+        assertEquals(-1, c2.purchaseTicket());
         assertEquals(0, c2.getAvailable());
     }
 

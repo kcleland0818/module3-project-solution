@@ -7,11 +7,15 @@ public class Driver {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String prompt = "Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: ";
+        String prompt = "Select an action: " +
+                "a=add concert, " +
+                "d=display all concerts, " +
+                "p=purchase ticket, " +
+                "w=add to waitlist," +
+                " q=quit: ";
         String action;
 
         // Prompt the user for an action
-
         // Loop until the user enters q to quit
         do {
             System.out.println(prompt);
@@ -19,17 +23,7 @@ public class Driver {
 
             switch (action) {
                 case "a":
-                    System.out.println("Enter the performer's name:");
-                    String performer = scanner.nextLine();
-                    try {
-                        System.out.println("Enter the number of available tickets:");
-                        int available = scanner.nextInt();
-                        scanner.nextLine();  //consume the rest of the input
-                        service.addConcert(performer, available);
-                    }
-                    catch (InputMismatchException e) {
-                        System.out.println("Value was not an integer");
-                    }
+                    addConcert();
                     break;
                 case "d":
                     service.displayConcerts();
@@ -51,4 +45,28 @@ public class Driver {
         while (!action.equals("q"));
     }
 
-} 
+    private static void addConcert() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the performer's name:");
+        String performer = scanner.nextLine();
+        try {
+            System.out.println("Enter the number of available tickets:");
+            int available = scanner.nextInt();
+            scanner.nextLine();  //consume the rest of the input
+            service.addConcert(performer, available);
+        }
+        catch (InputMismatchException e) {
+            System.out.println("Value was not an integer");
+        }
+    }
+
+    private static void purchaseTicket() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the performer's name:");
+        String performer = scanner.nextLine();
+        System.out.println("Enter the type of ticket you'd like to purchase: " +
+                "W for walk-up ticket, " +
+                "A for advance ticket, " +
+                "S for student ticket");
+    }
+}
