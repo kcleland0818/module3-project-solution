@@ -9,8 +9,8 @@ class ConcertTest {
 
     @BeforeEach
     void setup() {
-         c1 = new Concert("The Weeknd", 10);
-         c2 = new Concert("Harry Styles", 2);
+         c1 = new Concert("The Weeknd", 10, "03/15/2023");
+         c2 = new Concert("Harry Styles", 2, "03/17/2023");
     }
 
     @Test
@@ -26,8 +26,8 @@ class ConcertTest {
 
     @Test
     void testToString() {
-        assertEquals("Concert{performer='The Weeknd', available=10, waitlist=0}", c1.toString());
-        assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0}", c2.toString());
+        assertEquals("Concert{performer='The Weeknd', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
+        assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0, concertDate=2023-03-17}", c2.toString());
     }
 
     @Test

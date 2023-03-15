@@ -7,7 +7,7 @@ public class ConcertService {
     public void addConcert(String performer, int available) {
         Concert concert = repository.findByPerformer(performer);
         if (concert == null) {
-            if (repository.add(new Concert(performer, available))) {
+            if (repository.add(new Concert(performer, available, "03/15/2023"))) {
                 System.out.println("Added concert");
             }
             else {

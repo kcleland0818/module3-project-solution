@@ -1,12 +1,18 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class Concert {
 
     private String performer;
     private int available;
     private int waitlist;
 
-    public Concert(String performer, int available) {
+    private LocalDate concertDate;
+
+    public Concert(String performer, int available, String concertDate) {
         this.performer = performer;
         this.available = available;
+        this.concertDate = LocalDate.parse(concertDate, DateTimeFormatter.ofPattern("MM/dd/uuuu"));
     }
 
     public String getPerformer() {
@@ -20,6 +26,8 @@ public class Concert {
     public int getWaitlist() {
         return waitlist;
     }
+
+    public LocalDate getConcertDate() { return concertDate; }
 
     /**
      * If there are still tickets available, return a positive integer with the ticket number
@@ -47,6 +55,7 @@ public class Concert {
                 "performer='" + performer + '\'' +
                 ", available=" + available +
                 ", waitlist=" + waitlist +
+                ", concertDate=" + concertDate +
                 '}';
     }
 }
