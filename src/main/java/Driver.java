@@ -33,8 +33,7 @@ public class Driver {
                     service.displayConcerts();
                     break;
                 case "p":
-                    System.out.println("Enter the performer's name:");
-                    service.purchaseTicket( scanner.nextLine() );
+                    purchaseTicket();
                     break;
                 case "w":
                     System.out.println("Enter the performer's name:");
@@ -78,9 +77,25 @@ public class Driver {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the performer's name:");
         String performer = scanner.nextLine();
-        System.out.println("Enter the type of ticket you'd like to purchase: " +
-                "W for walk-up ticket, " +
-                "A for advance ticket, " +
-                "S for student ticket");
+
+        try {
+            System.out.println("Are you a student? Enter true or false:");
+            boolean isStudent = scanner.nextBoolean();
+            scanner.nextLine();    // Consume the rest of the input
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+            System.out.println("Enter a date you wish to purchase the ticket MM/dd/uuuu:");
+            String purchaseDate = scanner.nextLine();
+
+            // Validate the date
+            LocalDate date = LocalDate.parse(purchaseDate, formatter);
+
+            service.purchaseTicket(performer, isStudent, date);
+        } catch (InputMismatchException e) {
+            System.out.println("A true or false value was not entered to determine if student");
+        } catch (DateTimeParseException e) {
+            System.out.println("Purchase date was not a valid date");
+        }
     }
 }

@@ -56,27 +56,70 @@ class ConcertServiceTest {
 
 
     @Test
-    void purchaseTicket() {
+    void purchaseTicketSoldOutTest() {
         concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
-        concertService.purchaseTicket("Taylor Swift");
-        concertService.purchaseTicket("Taylor Swift");
-        concertService.purchaseTicket("Taylor Swift");
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
         // sold out, ticket unavailable
-        concertService.purchaseTicket("Taylor Swift");
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
-                     "Ticket purchased\n" +
-                     "Ticket purchased\n" +
-                     "Ticket purchased\n" +
-                     "Ticket unavailable",
+                        "Ticket Number = 3, Price = 50.00\n" +
+                        "Ticket purchased\n" +
+                        "Ticket Number = 2, Price = 50.00\n" +
+                        "Ticket purchased\n" +
+                        "Ticket Number = 1, Price = 50.00\n" +
+                        "Ticket purchased\n" +
+                        "Ticket unavailable",
                 outputStreamCaptor.toString().trim());
     }
 
     @Test
     void purchaseTicketUnknownArtist() {
         concertService.addConcert("Taylor Swift" , 1000, LocalDate.of(2023, 3, 15));
-        concertService.purchaseTicket("Unknown Singer");
+        concertService.purchaseTicket("Unknown Singer", false, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
                       "No concert for Unknown Singer",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void testPurchaseTicketStudent() {
+        concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift", true, LocalDate.of(2023, 3, 15));
+        assertEquals("Added concert\n" +
+                        "Ticket Number = 3, Price = 25.00\n" +
+                        "Ticket purchased",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void testPurchaseTicketAdvanceLessThan10() {
+        concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 14));
+        assertEquals("Added concert\n" +
+                        "Ticket Number = 3, Price = 40.00\n" +
+                        "Ticket purchased",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void testPurchaseTicketAdvance10Days() {
+        concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 5));
+        assertEquals("Added concert\n" +
+                        "Ticket Number = 3, Price = 30.00\n" +
+                        "Ticket purchased",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void testPurchaseTicketAdvanceMoreThan10() {
+        concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 1));
+        assertEquals("Added concert\n" +
+                        "Ticket Number = 3, Price = 30.00\n" +
+                        "Ticket purchased",
                 outputStreamCaptor.toString().trim());
     }
 
