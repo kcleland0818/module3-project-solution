@@ -1,262 +1,131 @@
 # Module 3 Project
 
-## What Changed
-
-- Add the Ticket abstract class and subclasses to the project
-- Replaced the Array of Concerts with a List of Concerts
-- Add a LocalDate to the Concert class
-- Integrated the Ticket with Concert
-  - Changed Concert::purchaseTicket() to return an int with the ticket number
-  - When adding a concert, you have to add a concert date.
-    - Change in the ConcertService to handle this.
-    - Change in the Driver to get a concert date from the user.
-      - Validate the date provided.
-  - Changed ConcertService::purchaseTicket to take in a performer, isStudent, and a purchaseDate.
-    - Created a private method in the ConcertService class to help determine if a ticket should be purchased.
-      - If the purchaseDate is after the concertDate, then you cannot buy a ticket.
-      - Call Concert::purchaseTicket() and see if you get a valid ticket number (positive int) back.
-      - Determine which type of ticket the user will buy:
-        - If it is a student, then purchase a student ticket for $25
-        - If it is a walk-up (check if purchaseDate and concertDate are equal), then purchase a walk-up ticket for $50
-        - If it is an advance ticket, then determine how far in advance the ticket is being bought
-          - I used ChronoUnit.DAYS.between() but students can use the minus() method too.
-            - Will provide hint in instructions.
-          - If it is more than 10 days in advance or more, then purchase an advance ticket for $30
-          - Otherwise, purchase an advance ticket for $40
-    - Update the Driver class appropriately to ask if the user is a student and when they will be purchasing the ticket
-      - Prompt for the purchaseDate is to avoid unit testing issues and other issues with using LocalDate.now()
-      - Validate the date provided
-
-Design Decisions:
-
-- I wanted to put a List or Array of Tickets in the Concert class
-  - BUT then I'd probably have to initialize the array or list with the number of tickets and "pop" a ticket off when
-    "purchased".
-  - Seemed like it might have added an extra layer of complexity? Business logic might have had to go in the Concert
-    class then rather than the service class.
-- So instead, I decided to have the Concert class return a ticketNumber based off of availability of tickets (available
-  is still an integer instance variable).
-  - This in turn allowed me to put more business logic in the service class.
-- Let the LocalDates speak for themselves in determining what kind of ticket should be bought RATHER than asking the
-  user for what type of ticket they would like to buy.
-  - Avoids complexity in the Driver class.
-  - More practice with dates
-
-Questions:
-
-- Complexity: is this too complex for students? How do we have students approach this? What starter code, if any do we
-  provide?
-  - My opinion is the integration might be the "hardest" part for students, but that also gives them really good
-    real-world practice since they most likely will integrate features into existing codebases on the job, rather than
-    writing a codebase from scratch.
-- UML: A concert "has" tickets but because I did not add an array or list of Ticket objects to the class, can we still
-  show that relationship?
-- Stretch goal of a Concert Venue: My opinion is the stretch goal here is A LOT on students. Even if we did add it, I
-  doubt students would implement it. (Assuming most students do the minimum required work anyway)
-
-## Below is Module 2 Instructions from before
-
 ## Learning Goals
 
-- Implement a class with instance variables, a constructor, and methods that
-  access and mutate the instance variables.
-- Implement an application with multiple classes.
-- Implement various types of class associations.
+- Incrementally expand the Module 2 Project.
+- Implement an abstract class with subclasses.
+- Implement a `List`.
+- Implement dates being used throughout the application.
 
-## Instructions
+## Introduction
 
-Fork and clone this project.
-The starter code contains several empty classes that
-you will develop incrementally as you learn the material
-in this module.
+For this module project, you will expand upon the Module 2 Project. All the code
+you need to start with this project will be within that repository.
 
-![uml module2 project](https://curriculum-content.s3.amazonaws.com/6676/java-multipleclasses/uml_module2_project.png)
+Fork and clone the Module 2 Project into a new repository. This will keep the
+two projects separate as you develop incrementally new material that you learn
+within this module.
 
-## Task #1 - `concert.Concert` class
+## Overview
 
-The `concert.Concert` class encapsulates data about the 
-artist performing at a music concert, the number of tickets
-available for purchase, and the number of people on the wait list.
+In this project, you will implement a ticket feature into the concert
+application. Consider the following ticket rules:
 
-(1) Add instance variables in the following order to the `concert.Concert` class:
+- Walk-up tickets are purchased the day of the concert and cost $50.
+- Student tickets are sold at half the price of walk-up tickets.
+- Advance tickets are sold prior to the concert (you cannot buy an advance
+  ticket the day of, as that would be a walk-up ticket).
+  - If the advance ticket is purchased 10 or more days before the concert, then
+    the ticket costs $30.
+  - Else, the ticket costs $40.
 
-- A String named `performer`.
-- An int named `available`.
-- An int named `waitlist`.
+In order to integrate this feature, we'll make use of data structures,
+additional business logic, and implement dates using the new Date and Time API.
 
-(2) Add a constructor that takes two parameters to initialize the `performer` and
-`available` instance variables.  The `waitlist` instance variable
-should be initialized to a default value of 0.
+Throughout the module, you will be given time to work on this project. Look for
+the "Project Work Time" lessons, as they will signal when to start the next
+task outlined here.
 
-(3) Use IntelliJ to generate getter methods for each of the instance variables.
+It is recommended you complete each task in order, as some tasks depend on other
+classes to be implemented beforehand.
 
-(4) Use IntelliJ to generate a `toString()` method, selecting all fields.
+## Task 1 - Create a `Ticket` Abstract Class
 
-(5) Edit the `concert.ConcertTest` Junit test class to test the constructor, getters,
-and `toString` methods:
+There are three different types of tickets that you will implement in this
+project. But they all have one thing in common: they are all tickets. Create a
+`Ticket` abstract class that the three ticket types will extend off of.
+
+1. Create a ticket package in the `src/main/java` directory called "ticket".
+  1. This is where we will implement the ticket feature.
+2. Create an abstract class called `Ticket`.
+  1. Add an `int` instance variable called `ticketNumber` since every ticket
+     will have a ticket number associated with it.
+  2. Create a constructor that takes in a `ticketNumber` and initializes the
+     instance variable.
+  3. Use IntelliJ to generate a getter method for the instance variable.
+  4. Create an abstract method called `getPrice()` that takes no parameters and
+     returns a `double`.
+  5. Add the following code to override the `toString()` method:
 
 ```java
-import concert.Concert;
+    @Override
+    public String toString() {
+        return String.format("Ticket Number = %d, Price = %.2f", ticketNumber, getPrice());
+    }
+```
 
-class concert.ConcertTest {
+This task can be completed now.
 
-    private Concert c1, c2;
+## Task 2 - Evolve the Array to a List
+
+Currently, the `ConcertRepository` class has an array of concerts. But now that
+we have learned about more data structures, let's replace the array with a
+`List`. Since a `List` is dynamically sized, as in we can continue to add
+elements to it, we won't be restricted by how many concerts we could have!
+
+1. Modify the `ConcertRepository` class.
+  1. Replace the array of `Concert` objects with a `List` of `Concert` objects.
+  2. Make the appropriate adjustments.
+  3. Remove the instance variable `currentSize`.
+  4. Remove the method `getCurrentSize()`.
+  5. Create a method called `getAllConcerts()` that takes no parameters and
+     returns the `List` of `Concert` objects.
+2. Modify the `ConcertService` appropriately given the changes made to the
+   `ConcertRepository` class.
+3. Modify the following unit tests below and ensure the tests all pass.
+
+Update the `ConcertRepositoryTest`:
+
+```java
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ConcertRepositoryTest {
+
+    private ConcertRepository repository;
 
     @BeforeEach
-    void setup() {
-        c1 = new Concert("The Weeknd", 10);
-        c2 = new Concert("Harry Styles", 2);
+    void setUp() {
+        repository = new ConcertRepository();
     }
 
     @Test
     void constructor() {
-        assertEquals("The Weeknd", c1.getPerformer());
-        assertEquals(10, c1.getAvailable());
-        assertEquals(0, c1.getWaitlist());
-
-        assertEquals("Harry Styles", c2.getPerformer());
-        assertEquals(2, c2.getAvailable());
-        assertEquals(0, c2.getWaitlist());
-    }
-
-    @Test
-    void testToString() {
-        assertEquals("concert.Concert{performer='The Weeknd', available=10, waitlist=0}", c1.toString());
-        assertEquals("concert.Concert{performer='Harry Styles', available=2, waitlist=0}", c2.toString());
-    }
-
-}
-```
-
-Run the Junit tests to ensure the code passes the tests.
-
-Once you have that working, edit the `concert.Concert` class to add the following methods:
-
-- A method named `purchaseTicket()` that takes no parameters and returns a `boolean`.
-  - If the number of available tickets is positive, decrement the number
-    of available tickets by 1 and return `true`.  Return `false` if there are
-    no tickets available.
-- A method named `addtoWaitList()` that takes no parameters and does not return a value.
-  - Increment the `waitlist` value by 1.
-
-Edit the `concert.ConcertTest` Junit test class to add the following test methods.
-
-```java
-@Test
-void purchaseTicket() {
-    assertEquals(10, c1.getAvailable());
-    assertTrue(c1.purchaseTicket());
-    assertEquals(9, c1.getAvailable());
-    assertTrue(c1.purchaseTicket());
-    assertEquals(8, c1.getAvailable());
-
-    assertEquals(2, c2.getAvailable());
-    assertTrue(c2.purchaseTicket());
-    assertEquals(1, c2.getAvailable());
-    assertTrue(c2.purchaseTicket());
-    assertEquals(0, c2.getAvailable());
-    //no tickets left, remain at 0
-    assertFalse(c2.purchaseTicket());
-    assertEquals(0, c2.getAvailable());
-    }
-
-@Test
-void addToWaitlist() {
-    assertEquals(0, c1.getWaitlist());
-    c1.addToWaitlist();
-    assertEquals(1, c1.getWaitlist());
-    c1.addToWaitlist();
-    assertEquals(2, c1.getWaitlist());
-
-    assertEquals(0, c2.getWaitlist());
-    c2.addToWaitlist();
-    assertEquals(1, c2.getWaitlist());
-    c2.addToWaitlist();
-    assertEquals(2, c2.getWaitlist());
-    }
-```
-
-## Task #2 - `concert.ConcertRepository` class
-
-The `concert.ConcertRepository` class will use an array to
-encapsulate a collection of `concert.Concert` class instances.
-The `concert.ConcertRepository` class models a subset of
-functionality found in the `ArrayList`
-class that is part of the Java Collections Framework.
-
-
-(1) Edit the `concert.ConcertRepository` class to add two instance variables:
-
-- An array named `concerts` that stores `concert.Concert` class instances.
-- An int named `currentSize` that stores the number of `concert.Concert` objects
-  that have been added to the array.  This value may differ from the array size,
-  which represents the maximum number of concerts that may be added to the array.
-
-
-(2) Create a constructor for the `concert.ConcertRepository` that takes one parameter named
-`maxSize`.  The constructor should initialize the array size using the `maxSize` variable.
-Note that initially all elements in the array will be `null` since the array
-stores instances of the reference type  `concert.Concert`.
-
-(3) Generate a getter method for the `currentSize` instance variable named `getCurrentSize`.
-
-(4) Create a method named `add` that takes one parameter and returns a `boolean`.
-The parameter type should be `concert.Concert`.  
-
-- The `currentSize` instance variable represents the number of concerts that have
-  been added to the array. Initially this value is 0.
-- If the array is not full (i.e. the current size is less than the array length),
-  add the parameter object into the array using the current size as the index.  Increment
-  the current size and return `true` to indicate the concert was added to the repository.
-- If the array is already full, simply return `false` to indicate the concert
-  could not be added to the repository.
-
-(5) Create a method named `get` that takes in int parameter and returns a `concert.Concert` object.
-The method should return a `concert.Concert` object using the parameter as the index
-into the array, or return `null` if the index is out of bounds.  The method should not
-throw an exception.
-
-(6) Edit the `concert.ConcertRepositoryTest` Junit class to test the constructor and methods:
-
-```java
-
-import concert.Concert;
-import concert.ConcertRepository;
-
-class concert.ConcertRepositoryTest {
-
-    @Test
-    void constructor() {
-        // repository can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
 
         // current size is 0 since no concerts have been added
-        assertEquals(0, repository.getCurrentSize());
+        assertEquals(0, repository.getAllConcerts().size());
     }
 
     @Test
     void addGet1() {
-        // repository can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
-        assertEquals(0, repository.getCurrentSize());
+        assertEquals(0, repository.getAllConcerts().size());
 
         // add a concert
         assertTrue(repository.add(new Concert("Artist0", 1000)));
-        assertEquals(1, repository.getCurrentSize());
+        assertEquals(1, repository.getAllConcerts().size());
 
         // retrieve the concert using index 0
         Concert c = repository.get(0);
         assertEquals("Artist0", c.getPerformer());
         assertEquals(1000, c.getAvailable());
-        assertEquals(0, c.getPerformer());
 
     }
 
     @Test
-    void addget5() {
-        // repository can hold up to 5 concerts
-        ConcertRepository repository = new ConcertRepository(5);
-        assertEquals(0, repository.getCurrentSize());
+    void addGet5() {
+        assertEquals(0, repository.getAllConcerts().size());
 
         // add 5 concerts
         for (int i = 0; i < 5; i++) {
@@ -267,37 +136,29 @@ class concert.ConcertRepositoryTest {
             assertNotNull(repository.get(i));
 
             // confirm the current size
-            assertEquals(i + 1, repository.getCurrentSize());
+            assertEquals(i + 1, repository.getAllConcerts().size());
         }
 
-        // array is full, can't add another concert
-        assertFalse(repository.add(new Concert("Another artist", 100)));
-
         // confirm the size did not increase
-        assertEquals(5, repository.getCurrentSize());
+        assertEquals(5, repository.getAllConcerts().size());
     }
 
     @Test
     void getConcertState() {
-        // array can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
-
         // add 3 concerts
-        assertTrue(repository.add(new Concert("The Weeknd", 1000)));
+        assertTrue(repository.add(new Concert("The Weekend", 1000)));
         assertTrue(repository.add(new Concert("Taylor Swift", 500)));
         assertTrue(repository.add(new Concert("Harry Styles", 20000)));
-        assertEquals(3, repository.getCurrentSize());
+        assertEquals(3, repository.getAllConcerts().size());
 
         // confirm each concert was inserted in the correct array position
-        assertEquals("The Weeknd", repository.get(0).getPerformer());
+        assertEquals("The Weekend", repository.get(0).getPerformer());
         assertEquals("Taylor Swift", repository.get(1).getPerformer());
         assertEquals("Harry Styles", repository.get(2).getPerformer());
     }
 
     @Test
     public void getOutOfBounds() {
-        // array can hold up to 3 concerts
-        ConcertRepository repository = new ConcertRepository(3);
         assertTrue(repository.add(new Concert("artist1", 1000)));
         assertTrue(repository.add(new Concert("artist2", 1000)));
         assertTrue(repository.add(new Concert("artist3", 1000)));
@@ -306,322 +167,987 @@ class concert.ConcertRepositoryTest {
         assertNull(repository.get(-1));
         assertNull(repository.get(3));
     }
-}
-```
-
-Run the Junit tests to ensure the code passes the tests.
-
-Once you have that working, edit the `concert.ConcertRepository` class
-to add a method named `findByPerformer` that takes one parameter, a string
-representing the name of the performer, and returns a `concert.Concert`
-object.  The method should iterate through the array looking for a concert
-having a matching performer name.
-
-*Be careful, the size of the array
-does not represent the number of `concert.Concert` objects in the array, so some
-array elements may be null.*  The method should return `null` if the
-repository does not contain a concert for that performer.
-
-```java
-
-@Test
-void findByPerformer() {
-    concert.ConcertRepository repository = new concert.ConcertRepository(2);
-  
-    repository.add(new concert.Concert("Taylor Swift", 1000));
-    repository.add(new concert.Concert("The Weeknd", 500));
-  
-    concert.Concert c1 = repository.findByPerformer("Taylor Swift");
-    assertEquals("Taylor Swift", c1.getPerformer());
-    assertEquals(1000, c1.getAvailable());
-    assertEquals(0, c1.getWaitlist());
-  
-    concert.Concert c2 = repository.findByPerformer("The Weeknd");
-    assertEquals("The Weeknd", c2.getPerformer());
-    assertEquals(500, c2.getAvailable());
-    assertEquals(0, c2.getWaitlist());
-  
-    //unknown performer
-    concert.Concert c3 = repository.findByPerformer("Unknown Singer");
-    assertNull(c3);
-
-}
-```
-
-## Optional Challenge - Case Insensitive Search
 
 
-Edit the  `findByPerformer` method in the `concert.ConcertRepository` class
-to perform a case-insensitive search using the
-performer name.  The method should ignore the case of the string
-based as a parameter as well as the string representing the
-performer name stored in the array.
+    @Test
+    void findByPerformer() {
+        repository.add(new Concert("Taylor Swift", 1000));
+        repository.add(new Concert("The Weekend", 500));
 
-Add the following  method to the `concert.ConcertRepositoryTest` class
-to test the new functionality:
+        Concert c1 = repository.findByPerformer("Taylor Swift");
+        assertEquals("Taylor Swift", c1.getPerformer());
+        assertEquals(1000, c1.getAvailable());
+        assertEquals(0, c1.getWaitlist());
 
-```java
-@Test
-void caseInsensitiveFind() {
-    concert.ConcertRepository repository = new concert.ConcertRepository(2);
-  
-    repository.add(new concert.Concert("Taylor Swift", 1000));
-    repository.add(new concert.Concert("The Weeknd", 500));
-  
-    concert.Concert c1 = repository.findByPerformer("TAYLOR swift");
-    assertEquals("Taylor Swift", c1.getPerformer());
-    assertEquals(1000, c1.getAvailable());
-    assertEquals(0, c1.getWaitlist());
+        Concert c2 = repository.findByPerformer("The Weekend");
+        assertEquals("The Weekend", c2.getPerformer());
+        assertEquals(500, c2.getAvailable());
+        assertEquals(0, c2.getWaitlist());
 
-}
-```
+        //unknown performer
+        Concert c3 = repository.findByPerformer("Unknown Singer");
+        assertNull(c3);
 
-## Task #3 - `concert.ConcertService` class
-
-The `concert.ConcertRepository` class encapsulates a collection of `concert.Concert` objects
-and provides methods to add a new concert, get a concert by index, and find
-a concert by performer name.  However, the `concert.ConcertRepository`
-class does not provide business logic or input/output interaction
-with the user.    This will be handled in two additional classes:
-
-- The `Driver` class implements a command-line interface (CLI) to handle user input, repeatedly
-  prompting the user with: "Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit:"
-- The `Driver` class will delegate the request to a `concert.ConcertService` object.
-- The `concert.ConcertService` class implements the business logic for the application.
-  - Adding a concert:
-    - Print a success message if the concert is added to the repository.
-    - Print an error message if the repository already contains a concert for that performer.
-    - Print an error message if the repository can't add a concert (array is full).
-  - Display all concerts
-    - Iterate and print each concert in the repository.
-  - Purchase ticket:
-    - Print a success message if the purchase was successful.
-    - Print an error message if the repository does not contain a concert for the specified performer.
-    - Print an error message if the repository contains the concert but the purchase is unsuccessful (no tickets available).
-  - Add to waitlist:
-    - Print a success message if the waitlist update was successful.
-    - Print an error message if the repository does not contain a concert for the specified performer.
-
-
-
-The `Driver` class will use the `concert.ConcertService` class to perform the
-actions requested by the user.  The `concert.ConcertService` class in turn
-uses the `concert.ConcertRepository` class to manage the actual storage of `concert.Concert`
-objects in the array.
-
-![uml module2 project](https://curriculum-content.s3.amazonaws.com/6676/java-multipleclasses/uml_module2_project.png)
-
-(1) Edit the `concert.ConcertService` class to add an instance variable to reference an instance of `concert.ConcertRepository`
-that stores a maximum of 3 concerts.
-
-```java
-private  concert.ConcertRepository repository = new concert.ConcertRepository(3);
-```
-
-(2) Edit the `concert.ConcertService` class to add a method named `addConcert` that takes two
-parameters: the performer name and the number of available tickets.  The method does not return a value.
-  - Call the `findByPerformer` method to test if a concert for that performer
-  exists in the repository, and print "Unable to add concert" if one already does.
-  - If there is no existing concert for the performer, create a new concert
-  and call the `add` method to add the concert to the repository.
-    - Print "Added concert" if the `add` method returns `true`.
-    - Print "Unable to add concert" if the `add` method returns `false`.
-
-(3) Edit `concert.ConcertServiceTest` to add two methods to test the new functionality:
-
-```java
-@Test
-void addFull() {
-    concertService.addConcert("Taylor Swift" , 100);
-    concertService.addConcert("The Weeknd", 5000);
-    concertService.addConcert("Harry Styles", 599);
-    // Array size 3, can't add any more
-    concertService.addConcert("Another Singer", 100);
-    assertEquals("Added concert\n" +
-                 "Added concert\n" +
-                 "Added concert\n" +
-                 "Unable to add concert",
-                 outputStreamCaptor.toString().trim());
-}
-
-@Test
-void duplicateAdd() {
-    concertService.addConcert("Taylor Swift" , 100);
-    concertService.addConcert("Taylor Swift" , 200);
-    assertEquals("Added concert\n" +
-                 "Unable to add concert",
-                 outputStreamCaptor.toString().trim());
-}
-```
-
-Run the Junit test and confirm your code.
-
-(4) Edit the `concert.ConcertService` class to
-add a method named `displayConcerts` that takes no parameters and returns no value.
-The method should call the repository `get` method to retrieve and print each concert in the repository.  
-
-(5) Edit `concert.ConcertServiceTest` to add two methods to test the new functionality:
-
-```java
-@Test
-void displayEmpty() {
-    concertService.displayConcerts();
-    assertEquals("", outputStreamCaptor.toString().trim());
-}
-
-@Test
-void displayNonEmpty() {
-    concertService.addConcert("Taylor Swift" , 100);
-    concertService.addConcert("The Weeknd", 5000);
-    concertService.displayConcerts();
-    assertEquals("Added concert\n" +
-                 "Added concert\n" +
-                 "concert.Concert{artist='Taylor Swift', available=100, waitlist=0}\n" +
-                 "concert.Concert{artist='The Weeknd', available=5000, waitlist=0}",
-                 outputStreamCaptor.toString().trim());
-}
-```
-
-Run the Junit tests and confirm your code.
-
-(6) Edit the `concert.ConcertService` class to
-add a method named `purchaseTicket`. The method takes one parameter, the performer name.
-The method does not return a value.
-
-- Call the `findByPerformer` method to test if a concert for that performer
-  exists in the repository, and print "No concert for name", substituting the
-  actual performer name, if there is no such concert.
-- If there is a concert for the performer, call the `purchaseTicket` method on the given concert
-  object.  Test the result returned from `purchaseTicket`.
-  - Print "ticket.Ticket purchased" if the `purchaseTicket` method returns `true`.
-  - Print "ticket.Ticket unavailable" if the `purchaseTicket` method returns `false`. 
-
-(7) Edit the `concert.ConcertServiceTest` class to add Junit tests:
-
-```java
-@Test
-void purchaseTicket() {
-    concertService.addConcert("Taylor Swift" , 3);
-    concertService.purchaseTicket("Taylor Swift");
-    concertService.purchaseTicket("Taylor Swift");
-    concertService.purchaseTicket("Taylor Swift");
-    // sold out, ticket unavailable
-    concertService.purchaseTicket("Taylor Swift");
-    assertEquals("Added concert\n" +
-                 "ticket.Ticket purchased\n" +
-                 "ticket.Ticket purchased\n" +
-                 "ticket.Ticket purchased\n" +
-                 "ticket.Ticket unavailable",
-            outputStreamCaptor.toString().trim());
-}
-
-@Test
-void purchaseTicketUnknownArtist() {
-    concertService.addConcert("Taylor Swift" , 1000);
-    concertService.purchaseTicket("Unknown Singer");
-    assertEquals("Added concert\n" +
-                  "No concert for Unknown Singer",
-            outputStreamCaptor.toString().trim());
-}
-```
-
-Run the Junit tests and confirm your code.
-
-(8) Edit the `concert.ConcertService` class to add a method `addToWaitlist` that takes
-one parameter, the performer name.  The method does not return a value.
-
-- Call the `findByPerformer` method to test if a concert for that performer
-  exists in the repository, and print "No concert for name", substituting the
-  actual performer name, if there is no such concert.
-- If there is a concert for the performer, call the `addToWaitlist` method on the given concert
-  object and then print "Added to waitlist".
- 
-(9) Edit the `concert.ConcertServiceTest` class to add Junit tests:
-
-```java
-@Test
-void addToWaitlist() {
-    concertService.addConcert("Taylor Swift" , 100);
-    concertService.addConcert("The Weeknd", 5000);
-    concertService.addToWaitlist("Taylor Swift");
-    concertService.addToWaitlist("Taylor Swift");
-    concertService.addToWaitlist("The Weeknd");
-    // no concert
-    concertService.addToWaitlist("Unknown Singer");
-
-    assertEquals("Added concert\n" +
-                 "Added concert\n" +
-                 "Added to waitlist\n" +
-                 "Added to waitlist\n" +
-                 "Added to waitlist\n" +
-                 "No concert for Unknown Singer",
-                outputStreamCaptor.toString().trim());
-}
-```
-
-
-## Task #4 - The `Driver` class
-
-Edit the `Driver` class as shown:
-
-```java
-import concert.ConcertService;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
-public class Driver {
-
-    private static ConcertService service = new ConcertService();
-
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String prompt = "Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: ";
-        String action;
-
-        // Prompt the user for an action
-        System.out.println(prompt);
-        action = scanner.nextLine();
-
-        // Loop until the user enters q to quit
-        while (!action.equals("q")) {
-            switch (action) {
-                case "a":
-                    System.out.println("Enter the performer's name:");
-                    String performer = scanner.nextLine();
-                    try {
-                        System.out.println("Enter the number of available tickets:");
-                        int available = scanner.nextInt();
-                        scanner.nextLine();  //consume the rest of the input
-                        service.addConcert(performer, available);
-                    } catch (InputMismatchException e) {
-                        System.out.println("Value was not an integer");
-                    }
-                case "d":
-                    service.displayConcerts();
-                    break;
-                case "p":
-                    System.out.println("Enter the performer's name:");
-                    service.purchaseTicket(scanner.nextLine());
-                    break;
-                case "w":
-                    System.out.println("Enter the performer's name:");
-                    service.addToWaitlist(scanner.nextLine());
-                    break;
-                default:
-                    System.out.println("Invalid choice: " + action);
-            }
-
-            // get the next action
-            System.out.println(prompt);
-            action = scanner.nextLine();
-        }
     }
 
-} 
+    @Test
+    void caseInsensitiveFind() {
+        repository.add(new Concert("Taylor Swift", 1000));
+        repository.add(new Concert("The Weekend", 500));
+
+        Concert c1 = repository.findByPerformer("TAYLOR swift");
+        assertEquals("Taylor Swift", c1.getPerformer());
+        assertEquals(1000, c1.getAvailable());
+        assertEquals(0, c1.getWaitlist());
+
+    }
+}
 ```
 
-Run the program and test the various actions.  For example:
+Update the `ConcertServiceTest`:
+
+```java
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ConcertServiceTest {
+
+    private final PrintStream standardOut = System.out;
+    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+    private ConcertService concertService;
+
+    @BeforeEach
+    public void setUp() {
+        System.setOut(new PrintStream(outputStreamCaptor));
+        concertService = new ConcertService();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        System.setOut(standardOut);
+    }
+
+    @Test
+    void duplicateAdd() {
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("Taylor Swift" , 200);
+        assertEquals("Added concert\n" +
+                        "Concert with Taylor Swift already exists. Unable to add concert",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void displayEmpty() {
+        concertService.displayConcerts();
+        assertEquals("", outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void displayNonEmpty() {
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("The Weekend", 5000);
+        concertService.displayConcerts();
+        assertEquals("Added concert\n" +
+                     "Added concert\n" +
+                     "Concert{performer='Taylor Swift', available=100, waitlist=0}\n" +
+                     "Concert{performer='The Weekend', available=5000, waitlist=0}",
+                     outputStreamCaptor.toString().trim());
+    }
+
+
+
+    @Test
+    void purchaseTicket() {
+        concertService.addConcert("Taylor Swift" , 3);
+        concertService.purchaseTicket("Taylor Swift");
+        concertService.purchaseTicket("Taylor Swift");
+        concertService.purchaseTicket("Taylor Swift");
+        // sold out, ticket unavailable
+        concertService.purchaseTicket("Taylor Swift");
+        assertEquals("Added concert\n" +
+                     "Ticket purchased\n" +
+                     "Ticket purchased\n" +
+                     "Ticket purchased\n" +
+                     "Ticket unavailable",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void purchaseTicketUnknownArtist() {
+        concertService.addConcert("Taylor Swift" , 1000);
+        concertService.purchaseTicket("Unknown Singer");
+        assertEquals("Added concert\n" +
+                      "No concert for Unknown Singer",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void addToWaitlist() {
+        concertService.addConcert("Taylor Swift" , 100);
+        concertService.addConcert("The Weekend", 5000);
+        concertService.addToWaitlist("Taylor Swift");
+        concertService.addToWaitlist("Taylor Swift");
+        concertService.addToWaitlist("The Weekend");
+        // no concert
+        concertService.addToWaitlist("Unknown Singer");
+
+        assertEquals("Added concert\n" +
+                     "Added concert\n" +
+                     "Added to waitlist\n" +
+                     "Added to waitlist\n" +
+                     "Added to waitlist\n" +
+                     "No concert for Unknown Singer",
+                    outputStreamCaptor.toString().trim());
+    }
+}
+```
+
+This task can be completed after the Collections Framework and Generics section.
+Note: There will be a lesson called "Project Work Time - Collections" that will
+signal when to start this part of the project.
+
+## Task 3 - Create the Ticket Subclasses
+
+In the overview, you saw there will be three subclasses of the `Ticket` abstract
+class. In this task, you will create those three subclasses now. Consider the
+following UML diagram:
+
+![ticket-uml](https://curriculum-content.s3.amazonaws.com/java-mod-3/project/uml-ticket-hierarchy.png)
+
+1. Create a `WalkupTicket` class that extends the `Ticket` class.
+  1. Return 50.0 for the price since walk-up tickets are purchased the day of
+     the concert and cost $50.
+  2. In the test directory, create a package called `ticket` under
+     `src/test/java`.
+  3. Within the `ticket` package in the `test` directory, add the following
+     test class:
+
+    ```java
+    package ticket;
+    
+    import org.junit.jupiter.api.Test;
+    
+    import static org.junit.jupiter.api.Assertions.assertEquals;
+    
+    public class WalkupTicketTest {
+    
+        @Test
+        void testWalkupTicket() {
+            WalkupTicket ticket = new WalkupTicket(1);
+            assertEquals(1, ticket.getTicketNumber());
+            assertEquals(50.0, ticket.getPrice());
+            assertEquals("ticket.Ticket Number = 1, Price = 50.00", ticket.toString());
+        }
+    }
+    ```
+
+  4. Run the JUnit and ensure it passes with your implementation.
+2. Create a `StudentTicket` class that extends the `WalkupTicket` class.
+  1. Return half the price of a walk-up ticket for the price.
+  2. Within the `ticket` package in the `test` directory, add the following
+     test class:
+
+    ```java
+    package ticket;
+    
+    import org.junit.jupiter.api.Test;
+    
+    import static org.junit.jupiter.api.Assertions.assertEquals;
+    
+    public class StudentTicketTest {
+    
+        @Test
+        void testStudentTicket() {
+            StudentTicket ticket = new StudentTicket(1);
+            assertEquals(1, ticket.getTicketNumber());
+            assertEquals(25.0, ticket.getPrice());
+            assertEquals("ticket.Ticket Number = 1, Price = 25.00", ticket.toString());
+        }
+    }
+    ```
+
+  3. Run the JUnit and ensure it passes with your implementation.
+3. Create an `AdvanceTicket` class that extends the `Ticket` class.
+  1. Add an `int` instance variable called `daysBeforeConcert` since you can
+     buy this kind of ticket in advance.
+  2. In the constructor, also take in a `daysBeforeConcert` parameter that
+     initializes the instance variable.
+  3. Use IntelliJ to generate a getter method for the instance variable.
+  4. Remember the ticket rules above when pricing out the advance ticket:
+    1. If the advance ticket is purchased 10 or more days before the concert,
+       then the ticket costs $30.00.
+    2. Else, the ticket costs $40.00.
+  5. Within the `ticket` package in the `test` directory, add the following
+     test class:
+
+    ```java
+    package ticket;
+    
+    import org.junit.jupiter.api.Test;
+    
+    import static org.junit.jupiter.api.Assertions.assertEquals;
+    
+    public class AdvanceTicketTest {
+    
+        @Test
+        void testAdvanceTicket10Days() {
+            AdvanceTicket ticket = new AdvanceTicket(1, 10);
+            assertEquals(1, ticket.getTicketNumber());
+            assertEquals(10, ticket.getDaysBeforeConcert());
+            assertEquals(30.0, ticket.getPrice());
+            assertEquals("ticket.Ticket Number = 1, Price = 30.00", ticket.toString());
+        }
+    
+        @Test
+        void testAdvanceTicketMoreThan10Days() {
+            AdvanceTicket ticket = new AdvanceTicket(2, 12);
+            assertEquals(2, ticket.getTicketNumber());
+            assertEquals(12, ticket.getDaysBeforeConcert());
+            assertEquals(30.0, ticket.getPrice());
+        }
+    
+        @Test
+        void testAdvanceTicketLessThan10Days() {
+            AdvanceTicket ticket = new AdvanceTicket(3, 9);
+            assertEquals(3, ticket.getTicketNumber());
+            assertEquals(9, ticket.getDaysBeforeConcert());
+            assertEquals(40.0, ticket.getPrice());
+        }
+    }
+    ```
+
+  6. Run the JUnits and ensure it passes with your implementation.
+
+This task can be completed after the More on Inheritance section. Note: There
+will be a lesson called "Project Work Time - Subclasses" that will signal when
+to start this part of the project.
+
+## Task 4 - Dates
+
+Now that we have learned about date and time objects, let's put them to use in
+our project. Every `Concert` should have a date associated with it. When we add
+this new instance variable, we'll have to make a few changes to our existing
+concert application.
+
+1. Modify the `Concert` class.
+  1. Add an instance variable called `concertDate` of the appropriate date-time
+     object.
+    1. Use a date-time object from the `Date and Time API`.
+    2. Hint: Look at the unit tests for a hint.
+  2. Update the constructor to take in the `concertDate` as a parameter.
+  3. Use IntelliJ to generate a getter method for `concertDate`.
+  4. Update the `toString()` method to include the `concertDate`.
+2. Modify the `ConcertService` class appropriately given the changes made to
+   the `Concert` class.
+3. Consider the following changes to the `Driver`:
+
+   ```java
+   import java.time.LocalDate;
+   import java.time.format.DateTimeFormatter;
+   import java.time.format.DateTimeParseException;
+   import java.time.format.ResolverStyle;
+   import java.util.InputMismatchException;
+   import java.util.Scanner;
+   
+   public class Driver {
+   
+       private static ConcertService service = new ConcertService();
+   
+       public static void main(String[] args) {
+           Scanner scanner = new Scanner(System.in);
+           String prompt = "Select an action: " +
+                   "a=add concert, " +
+                   "d=display all concerts, " +
+                   "p=purchase ticket, " +
+                   "w=add to waitlist," +
+                   " q=quit: ";
+           String action;
+   
+           // Prompt the user for an action
+           // Loop until the user enters q to quit
+           do {
+               System.out.println(prompt);
+               action = scanner.nextLine();
+   
+               switch (action) {
+                   case "a":
+                       addConcert();
+                       break;
+                   case "d":
+                       service.displayConcerts();
+                       break;
+                   case "p":
+                       System.out.println("Enter the performer's name:");
+                       service.purchaseTicket( scanner.nextLine() );
+                       break;
+                   case "w":
+                       System.out.println("Enter the performer's name:");
+                       service.addToWaitlist( scanner.nextLine() );
+                       break;
+                   case "q":
+                       break;
+                   default:
+                       System.out.println("Invalid choice: " + action);
+               }
+           }
+           while (!action.equals("q"));
+       }
+   
+       private static void addConcert() {
+           Scanner scanner = new Scanner(System.in);
+           System.out.println("Enter the performer's name:");
+           String performer = scanner.nextLine();
+           try {
+               System.out.println("Enter the number of available tickets:");
+               int available = scanner.nextInt();
+               scanner.nextLine();    // Consume the rest of the input
+   
+               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/uuuu")
+                       .withResolverStyle(ResolverStyle.STRICT);
+               System.out.println("Enter a date for the concert in the format of MM/dd/uuuu:");
+               String concertDate = scanner.nextLine();
+   
+               // Validate the date
+               LocalDate date = LocalDate.parse(concertDate, formatter);
+               service.addConcert(performer, available, date);
+           }
+           catch (InputMismatchException e) {
+               System.out.println("Number of available tickets was not an integer");
+           } catch (DateTimeParseException e) {
+               System.out.println("Concert date was not a valid date");
+           }
+       }
+   }
+   ```
+
+  1. Take note of how we are prompting the user for a concert date and how we are
+     validating the date is valid.
+  2. If we run the driver class now and add a concert, an expected output could be
+     this:
+
+   ```text
+   Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+   a
+   Enter the performer's name:
+   Taylor Swift
+   Enter the number of available tickets:
+   500
+   Enter a date for the concert in the format of MM/dd/uuuu:
+   03/17/2023
+   Added concert
+   Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+   a
+   Enter the performer's name:
+   Harry Styles
+   Enter the number of available tickets:
+   750
+   Enter a date for the concert in the format of MM/dd/uuuu:
+   02/29/2023
+   Concert date was not a valid date
+   Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+   q
+   ```
+
+4. Modify the following unit tests below and ensure the tests all pass.
+
+Update the `ConcertTest`:
+
+```java
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ConcertTest {
+
+    private Concert c1, c2;
+
+    @BeforeEach
+    void setup() {
+         c1 = new Concert("The Weekend", 10, LocalDate.of(2023, 3, 15));
+         c2 = new Concert("Harry Styles", 2, LocalDate.of(2023, 3, 17));
+    }
+
+    @Test
+    void constructor() {
+        assertEquals("The Weekend", c1.getPerformer());
+        assertEquals(10, c1.getAvailable());
+        assertEquals(0, c1.getWaitlist());
+
+        assertEquals("Harry Styles", c2.getPerformer());
+        assertEquals(2, c2.getAvailable());
+        assertEquals(0, c2.getWaitlist());
+    }
+
+    @Test
+    void testToString() {
+        assertEquals("Concert{performer='The Weekend', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
+        assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0, concertDate=2023-03-17}", c2.toString());
+    }
+
+    @Test
+    void purchaseTicket() {
+        assertEquals(10, c1.getAvailable());
+        assertTrue(c1.purchaseTicket());
+        assertEquals(9, c1.getAvailable());
+        assertTrue(c1.purchaseTicket());
+        assertEquals(8, c1.getAvailable());
+
+        assertEquals(2, c2.getAvailable());
+        assertTrue(c2.purchaseTicket());
+        assertEquals(1, c2.getAvailable());
+        assertTrue(c2.purchaseTicket());
+        assertEquals(0, c2.getAvailable());
+        //no tickets left, remain at 0
+        assertFalse(c2.purchaseTicket());
+        assertEquals(0, c2.getAvailable());
+    }
+
+    @Test
+    void addToWaitlist() {
+        assertEquals(0, c1.getWaitlist());
+        c1.addToWaitlist();
+        assertEquals(1, c1.getWaitlist());
+        c1.addToWaitlist();
+        assertEquals(2, c1.getWaitlist());
+
+        assertEquals(0, c2.getWaitlist());
+        c2.addToWaitlist();
+        assertEquals(1, c2.getWaitlist());
+        c2.addToWaitlist();
+        assertEquals(2, c2.getWaitlist());
+    }
+}
+```
+
+Update the `ConcertRepositoryTest`:
+
+```java
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ConcertRepositoryTest {
+
+    private ConcertRepository repository;
+
+    @BeforeEach
+    void setUp() {
+        repository = new ConcertRepository();
+    }
+
+    @Test
+    void constructor() {
+
+        // current size is 0 since no concerts have been added
+        assertEquals(0, repository.getAllConcerts().size());
+    }
+
+    @Test
+    void addGet1() {
+        assertEquals(0, repository.getAllConcerts().size());
+
+        // add a concert
+        assertTrue(repository.add(new Concert("Artist0", 1000, LocalDate.of(2023, 3, 15))));
+        assertEquals(1, repository.getAllConcerts().size());
+
+        // retrieve the concert using index 0
+        Concert c = repository.get(0);
+        assertEquals("Artist0", c.getPerformer());
+        assertEquals(1000, c.getAvailable());
+
+    }
+
+    @Test
+    void addGet5() {
+        assertEquals(0, repository.getAllConcerts().size());
+
+        // add 5 concerts
+        for (int i = 0; i < 5; i++) {
+            // add the concert
+            assertTrue(repository.add(new Concert("Artist" + i, i * 1000, LocalDate.of(2023, 3, i+1))));
+
+            // retrieve the concert using index i
+            assertNotNull(repository.get(i));
+
+            // confirm the current size
+            assertEquals(i + 1, repository.getAllConcerts().size());
+        }
+
+        // confirm the size did not increase
+        assertEquals(5, repository.getAllConcerts().size());
+    }
+
+    @Test
+    void getConcertState() {
+        // add 3 concerts
+        assertTrue(repository.add(new Concert("The Weekend", 1000, LocalDate.of(2023, 3, 15))));
+        assertTrue(repository.add(new Concert("Taylor Swift", 500, LocalDate.of(2023, 3, 16))));
+        assertTrue(repository.add(new Concert("Harry Styles", 20000, LocalDate.of(2023, 3, 17))));
+        assertEquals(3, repository.getAllConcerts().size());
+
+        // confirm each concert was inserted in the correct array position
+        assertEquals("The Weekend", repository.get(0).getPerformer());
+        assertEquals("Taylor Swift", repository.get(1).getPerformer());
+        assertEquals("Harry Styles", repository.get(2).getPerformer());
+    }
+
+    @Test
+    public void getOutOfBounds() {
+        assertTrue(repository.add(new Concert("artist1", 1000, LocalDate.of(2023, 3, 15))));
+        assertTrue(repository.add(new Concert("artist2", 1000, LocalDate.of(2023, 3, 16))));
+        assertTrue(repository.add(new Concert("artist3", 1000, LocalDate.of(2023, 3, 17))));
+
+        // test that out of bounds index returns null
+        assertNull(repository.get(-1));
+        assertNull(repository.get(3));
+    }
+
+
+    @Test
+    void findByPerformer() {
+        repository.add(new Concert("Taylor Swift", 1000, LocalDate.of(2023, 3, 15)));
+        repository.add(new Concert("The Weekend", 500, LocalDate.of(2023, 3, 17)));
+
+        Concert c1 = repository.findByPerformer("Taylor Swift");
+        assertEquals("Taylor Swift", c1.getPerformer());
+        assertEquals(1000, c1.getAvailable());
+        assertEquals(0, c1.getWaitlist());
+
+        Concert c2 = repository.findByPerformer("The Weekend");
+        assertEquals("The Weekend", c2.getPerformer());
+        assertEquals(500, c2.getAvailable());
+        assertEquals(0, c2.getWaitlist());
+
+        //unknown performer
+        Concert c3 = repository.findByPerformer("Unknown Singer");
+        assertNull(c3);
+
+    }
+
+    @Test
+    void caseInsensitiveFind() {
+        repository.add(new Concert("Taylor Swift", 1000, LocalDate.of(2023, 3, 15)));
+        repository.add(new Concert("The Weekend", 500, LocalDate.of(2023, 3, 16)));
+
+        Concert c1 = repository.findByPerformer("TAYLOR swift");
+        assertEquals("Taylor Swift", c1.getPerformer());
+        assertEquals(1000, c1.getAvailable());
+        assertEquals(0, c1.getWaitlist());
+
+    }
+}
+```
+
+Update the `ConcertServiceTest`:
+
+```java
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.time.LocalDate;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ConcertServiceTest {
+
+    private final PrintStream standardOut = System.out;
+    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+    private ConcertService concertService;
+
+    @BeforeEach
+    public void setUp() {
+        System.setOut(new PrintStream(outputStreamCaptor));
+        concertService = new ConcertService();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        System.setOut(standardOut);
+    }
+
+    @Test
+    void duplicateAdd() {
+        concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+        concertService.addConcert("Taylor Swift" , 200, LocalDate.of(2023, 3, 15));
+        assertEquals("Added concert\n" +
+                        "Concert with Taylor Swift already exists. Unable to add concert",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void displayEmpty() {
+        concertService.displayConcerts();
+        assertEquals("", outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void displayNonEmpty() {
+        concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+        concertService.addConcert("The Weekend", 5000, LocalDate.of(2023, 3, 16));
+        concertService.displayConcerts();
+        assertEquals("Added concert\n" +
+                     "Added concert\n" +
+                     "Concert{performer='Taylor Swift', available=100, waitlist=0, concertDate=2023-03-15}\n" +
+                     "Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-16}",
+                     outputStreamCaptor.toString().trim());
+    }
+
+
+
+    @Test
+    void purchaseTicket() {
+        concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Taylor Swift");
+        concertService.purchaseTicket("Taylor Swift");
+        concertService.purchaseTicket("Taylor Swift");
+        // sold out, ticket unavailable
+        concertService.purchaseTicket("Taylor Swift");
+        assertEquals("Added concert\n" +
+                     "Ticket purchased\n" +
+                     "Ticket purchased\n" +
+                     "Ticket purchased\n" +
+                     "Ticket unavailable",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void purchaseTicketUnknownArtist() {
+        concertService.addConcert("Taylor Swift" , 1000, LocalDate.of(2023, 3, 15));
+        concertService.purchaseTicket("Unknown Singer");
+        assertEquals("Added concert\n" +
+                      "No concert for Unknown Singer",
+                outputStreamCaptor.toString().trim());
+    }
+
+    @Test
+    void addToWaitlist() {
+        concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+        concertService.addConcert("The Weekend", 5000, LocalDate.of(2023, 3, 15));
+        concertService.addToWaitlist("Taylor Swift");
+        concertService.addToWaitlist("Taylor Swift");
+        concertService.addToWaitlist("The Weekend");
+        // no concert
+        concertService.addToWaitlist("Unknown Singer");
+
+        assertEquals("Added concert\n" +
+                     "Added concert\n" +
+                     "Added to waitlist\n" +
+                     "Added to waitlist\n" +
+                     "Added to waitlist\n" +
+                     "No concert for Unknown Singer",
+                    outputStreamCaptor.toString().trim());
+    }
+}
+```
+
+This task can be completed after learning about dates in the Common Utility
+Classes section. Note: There will be a lesson called "Project Work Time - Dates"
+that will signal when to start this part of the project.
+
+## Task 5 - Purchasing a Ticket Integration
+
+This is the last part of the project and how you will come full circle with
+integrating the ticket feature into the concert application.
+
+When a user "purchases a ticket", you need to provide the user with the ticket
+they have purchased (determined by the date the user purchases the ticket and
+whether the user is a student). You also need to let the user know still if they
+were able to successfully purchase a ticket. Consider the following instructions
+and tips on how to integrate the ticket feature:
+
+1. Modify the `purchaseTicket()` method in the `Concert` class.
+  1. Rework this method to return an `int` value instead of a `boolean` value.
+  2. Modify the method to match the description:
+    1. If there are still tickets available, return a positive integer with
+       the ticket number. Get the ticket number based on the availability of
+       tickets (for example, if there are 4 tickets available, the ticket
+       number would be 4).
+    2. If there are no tickets available, return a negative integer.
+  3. Update the `ConcertTest`:
+
+   ```java
+   import org.junit.jupiter.api.BeforeEach;
+   import org.junit.jupiter.api.Test;
+   
+   import java.time.LocalDate;
+   
+   import static org.junit.jupiter.api.Assertions.*;
+   
+   class ConcertTest {
+   
+       private Concert c1, c2;
+   
+       @BeforeEach
+       void setup() {
+            c1 = new Concert("The Weekend", 10, LocalDate.of(2023, 3, 15));
+            c2 = new Concert("Harry Styles", 2, LocalDate.of(2023, 3, 17));
+       }
+   
+       @Test
+       void constructor() {
+           assertEquals("The Weekend", c1.getPerformer());
+           assertEquals(10, c1.getAvailable());
+           assertEquals(0, c1.getWaitlist());
+   
+           assertEquals("Harry Styles", c2.getPerformer());
+           assertEquals(2, c2.getAvailable());
+           assertEquals(0, c2.getWaitlist());
+       }
+   
+       @Test
+       void testToString() {
+           assertEquals("concert.Concert{performer='The Weekend', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
+           assertEquals("concert.Concert{performer='Harry Styles', available=2, waitlist=0, concertDate=2023-03-17}", c2.toString());
+       }
+   
+       @Test
+       void purchaseTicket() {
+           assertEquals(10, c1.getAvailable());
+           assertEquals(10, c1.purchaseTicket());
+           assertEquals(9, c1.getAvailable());
+           assertEquals(9, c1.purchaseTicket());
+           assertEquals(8, c1.getAvailable());
+   
+           assertEquals(2, c2.getAvailable());
+           assertEquals(2, c2.purchaseTicket());
+           assertEquals(1, c2.getAvailable());
+           assertEquals(1, c2.purchaseTicket());
+           assertEquals(0, c2.getAvailable());
+           //no tickets left, remain at 0
+           assertEquals(-1, c2.purchaseTicket());
+           assertEquals(0, c2.getAvailable());
+       }
+   
+       @Test
+       void addToWaitlist() {
+           assertEquals(0, c1.getWaitlist());
+           c1.addToWaitlist();
+           assertEquals(1, c1.getWaitlist());
+           c1.addToWaitlist();
+           assertEquals(2, c1.getWaitlist());
+   
+           assertEquals(0, c2.getWaitlist());
+           c2.addToWaitlist();
+           assertEquals(1, c2.getWaitlist());
+           c2.addToWaitlist();
+           assertEquals(2, c2.getWaitlist());
+       }
+   }
+   ```
+
+  4. Run the `ConcertTest` and ensure all the tests still pass.
+2. Modify the `purchaseTicket` method in the `ConcertService` class.
+  1. Have the `purchaseTicket` method take in two more parameters:
+    1. A `boolean` to determine if the ticket buyer is a student.
+    2. A date-time object to determine the date the ticket buyer would like to
+       buy the ticket.
+  2. Implement the following logic:
+    1. If the `purchaseDate` is after the `concertDate`, then the ticket is
+       unavailable since the concert has passed.
+      1. Consider the
+         [isAfter method](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDate.html#isAfter(java.time.chrono.ChronoLocalDate))
+         to help compare date-time objects.
+      2. Make sure to print that ticket is unavailable.
+    2. If there are no tickets available, print the ticket is unavailable.
+    3. If there are tickets still available, check to see if the ticket buyer
+       is a student. If yes, print the `StudentTicket` and that a ticket has
+       been purchased.
+    4. If there are tickets still available, and the ticket buyer is not a
+       student, but the `purchaseDate` and `concertDate` are the same, then
+       print the `WalkupTicket` and that a ticket has been purchased.
+      1. Consider the
+         [isEqual method](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/LocalDate.html#isEqual(java.time.chrono.ChronoLocalDate))
+         to help compare date-time objects.
+    5. If there are still tickets available, and the ticket buyer is not a
+       student and the `purchaseDate` is before the `concertDate`, then
+       determine how many days before the concert is the ticket being
+       purchased.
+      1. Hint: There are a few ways you can go about this problem. Consider
+         the [ChronoUnit.DAYS.between method](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/temporal/ChronoUnit.html#between(java.time.temporal.Temporal,java.time.temporal.Temporal))
+         to help see how many days are between two dates.
+      2. Print the `AdvanceTicket` and that a ticket has been purchased.
+  3. Update the `ConcertServiceTest`:
+
+   ```java
+   import org.junit.jupiter.api.AfterEach;
+   import org.junit.jupiter.api.BeforeEach;
+   import org.junit.jupiter.api.Test;
+   
+   import java.io.ByteArrayOutputStream;
+   import java.io.PrintStream;
+   import java.time.LocalDate;
+   
+   import static org.junit.jupiter.api.Assertions.*;
+   
+   class ConcertServiceTest {
+   
+       private final PrintStream standardOut = System.out;
+       private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+       private ConcertService concertService;
+   
+       @BeforeEach
+       public void setUp() {
+           System.setOut(new PrintStream(outputStreamCaptor));
+           concertService = new ConcertService();
+       }
+   
+       @AfterEach
+       public void tearDown() {
+           System.setOut(standardOut);
+       }
+   
+       @Test
+       void duplicateAdd() {
+           concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+           concertService.addConcert("Taylor Swift" , 200, LocalDate.of(2023, 3, 15));
+           assertEquals("Added concert\n" +
+                           "concert.Concert with Taylor Swift already exists. Unable to add concert",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void displayEmpty() {
+           concertService.displayConcerts();
+           assertEquals("", outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void displayNonEmpty() {
+           concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+           concertService.addConcert("The Weekend", 5000, LocalDate.of(2023, 3, 16));
+           concertService.displayConcerts();
+           assertEquals("Added concert\n" +
+                        "Added concert\n" +
+                        "concert.Concert{performer='Taylor Swift', available=100, waitlist=0, concertDate=2023-03-15}\n" +
+                        "concert.Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-16}",
+                        outputStreamCaptor.toString().trim());
+       }
+   
+   
+   
+       @Test
+       void purchaseTicketSoldOutTest() {
+           concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
+           // sold out, ticket unavailable
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 15));
+           assertEquals("Added concert\n" +
+                           "ticket.Ticket Number = 3, Price = 50.00\n" +
+                           "ticket.Ticket purchased\n" +
+                           "ticket.Ticket Number = 2, Price = 50.00\n" +
+                           "ticket.Ticket purchased\n" +
+                           "ticket.Ticket Number = 1, Price = 50.00\n" +
+                           "ticket.Ticket purchased\n" +
+                           "ticket.Ticket unavailable",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void purchaseTicketUnknownArtist() {
+           concertService.addConcert("Taylor Swift" , 1000, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Unknown Singer", false, LocalDate.of(2023, 3, 15));
+           assertEquals("Added concert\n" +
+                         "No concert for Unknown Singer",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void testPurchaseTicketStudent() {
+           concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", true, LocalDate.of(2023, 3, 15));
+           assertEquals("Added concert\n" +
+                           "ticket.Ticket Number = 3, Price = 25.00\n" +
+                           "ticket.Ticket purchased",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void testPurchaseTicketAdvanceLessThan10() {
+           concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 14));
+           assertEquals("Added concert\n" +
+                           "ticket.Ticket Number = 3, Price = 40.00\n" +
+                           "ticket.Ticket purchased",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void testPurchaseTicketAdvance10Days() {
+           concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 5));
+           assertEquals("Added concert\n" +
+                           "ticket.Ticket Number = 3, Price = 30.00\n" +
+                           "ticket.Ticket purchased",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void testPurchaseTicketAdvanceMoreThan10() {
+           concertService.addConcert("Taylor Swift" , 3, LocalDate.of(2023, 3, 15));
+           concertService.purchaseTicket("Taylor Swift", false, LocalDate.of(2023, 3, 1));
+           assertEquals("Added concert\n" +
+                           "ticket.Ticket Number = 3, Price = 30.00\n" +
+                           "ticket.Ticket purchased",
+                   outputStreamCaptor.toString().trim());
+       }
+   
+       @Test
+       void addToWaitlist() {
+           concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
+           concertService.addConcert("The Weeknd", 5000, LocalDate.of(2023, 3, 15));
+           concertService.addToWaitlist("Taylor Swift");
+           concertService.addToWaitlist("Taylor Swift");
+           concertService.addToWaitlist("The Weeknd");
+           // no concert
+           concertService.addToWaitlist("Unknown Singer");
+   
+           assertEquals("Added concert\n" +
+                        "Added concert\n" +
+                        "Added to waitlist\n" +
+                        "Added to waitlist\n" +
+                        "Added to waitlist\n" +
+                        "No concert for Unknown Singer",
+                       outputStreamCaptor.toString().trim());
+       }
+   }
+   ```
+
+  4. Run the `ConcertServiceTest` and ensure all the tests still pass.
+3. Modify the `Driver` class.
+  1. Create a new static void method called `purchaseTicket()`.
+    1. Prompt the user for the performer's name.
+    2. Prompt the user for boolean to determine if the ticket buyer is a
+       student.
+    3. Prompt the user for the date they wish to purchase the ticket using the
+       form: MM/dd/uuuu.
+      1. Example: 03/17/2023
+      2. Use the `ResolverStyle.STRICT` to force the user to enter a valid
+         date.
+    4. Call the `ConcertService` method, `purchaseTicket()` given the new
+       parameters.
+    5. Hint: Take a look at how we created the `addConcert()` method in the
+       driver class from the previous task.
+  2. In the `switch` statement, change `case "p":` to use the new static
+     method you created.
+  3. If we run the driver class now, an expected output could be this:
 
 ```text
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
@@ -629,88 +1155,88 @@ a
 Enter the performer's name:
 Taylor Swift
 Enter the number of available tickets:
-1000
-Added concert
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-a
-Enter the performer's name:
-The Weeknd
-Enter the number of available tickets:
-2
-Added concert
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
-concert.Concert{performer='The Weeknd', available=2, waitlist=0}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-p
-Enter the performer's name:
-The Weeknd
-ticket.Ticket purchased
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
-concert.Concert{performer='The Weeknd', available=1, waitlist=0}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-p
-Enter the performer's name:
-The Weeknd
-ticket.Ticket purchased
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
-concert.Concert{performer='The Weeknd', available=0, waitlist=0}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-p
-Enter the performer's name:
-The Weeknd
-ticket.Ticket unavailable
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
-concert.Concert{performer='The Weeknd', available=0, waitlist=0}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-p
-Enter the performer's name:
-The band
-No concert for The band
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-a
-Enter the performer's name:
-Taylor Swift
-Enter the number of available tickets:
 500
-Unable to add concert
+Enter a date for the concert in the format of MM/dd/uuuu:
+03/17/2023
+Added concert
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-w
-Enter the performer's name:
-The Weeknd
-Added to waitlist
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=0}
-concert.Concert{performer='The Weeknd', available=0, waitlist=1}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-w
+p
 Enter the performer's name:
 Taylor Swift
-Added to waitlist
+Are you a student? Enter true or false:
+false
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+03/18/2023
+Ticket unavailable
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=1}
-concert.Concert{performer='The Weeknd', available=0, waitlist=1}
-Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-w
+p
 Enter the performer's name:
-The band
-No concert for The band
+Taylor Swift
+Are you a student? Enter true or false:
+true
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+03/17/2023
+Ticket Number = 500, Price = 25.00
+Ticket purchased
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
-d
-concert.Concert{performer='Taylor Swift', available=1000, waitlist=1}
-concert.Concert{performer='The Weeknd', available=0, waitlist=1}
+p
+Enter the performer's name:
+Taylor Swift
+Are you a student? Enter true or false:
+false
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+03/17/2023
+Ticket Number = 499, Price = 50.00
+Ticket purchased
+Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+p
+Enter the performer's name:
+Taylor Swift
+Are you a student? Enter true or false:
+false
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+03/16/2023
+Ticket Number = 498, Price = 40.00
+Ticket purchased
+Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+p
+Enter the performer's name:
+Taylor Swift
+Are you a student? Enter true or false:
+false
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+03/07/2023
+Ticket Number = 497, Price = 30.00
+Ticket purchased
+Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+p
+Enter the performer's name:
+Taylor Swift
+Are you a student? Enter true or false:
+false
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+03/01/2023
+Ticket Number = 496, Price = 30.00
+Ticket purchased
+Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+p
+Enter the performer's name:
+Taylor Swift
+Are you a student? Enter true or false:
+yes
+A true or false value was not entered to determine if student
+Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
+p
+Enter the performer's name:
+Taylor Swift
+Are you a student? Enter true or false:
+true
+Enter a date you wish to purchase the ticket MM/dd/uuuu:
+02/29/2023
+Purchase date was not a valid date
 Select an action: a=add concert, d=display all concerts, p=purchase ticket, w=add to waitlist, q=quit: 
 q
 ```
+
+This last task can be completed at the end of the module. There will be no
+project work time for this last task.
