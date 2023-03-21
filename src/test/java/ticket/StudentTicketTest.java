@@ -11,6 +11,6 @@ public class StudentTicketTest {
         StudentTicket ticket = new StudentTicket(1);
         assertEquals(1, ticket.getTicketNumber());
         assertEquals(25.0, ticket.getPrice());
-        assertEquals("ticket.Ticket Number = 1, Price = 25.00", ticket.toString());
+        assertEquals("Ticket Number = 1, Price = 25.00", ticket.toString());
     }
 }

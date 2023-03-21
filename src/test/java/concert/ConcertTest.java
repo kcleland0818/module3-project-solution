@@ -30,8 +30,8 @@ class ConcertTest {
 
     @Test
     void testToString() {
-        assertEquals("concert.Concert{performer='The Weekend', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
-        assertEquals("concert.Concert{performer='Harry Styles', available=2, waitlist=0, concertDate=2023-03-17}", c2.toString());
+        assertEquals("Concert{performer='The Weekend', available=10, waitlist=0, concertDate=2023-03-15}", c1.toString());
+        assertEquals("Concert{performer='Harry Styles', available=2, waitlist=0, concertDate=2023-03-17}", c2.toString());
     }
 
     @Test

@@ -12,7 +12,7 @@ public class AdvanceTicketTest {
         assertEquals(1, ticket.getTicketNumber());
         assertEquals(10, ticket.getDaysBeforeConcert());
         assertEquals(30.0, ticket.getPrice());
-        assertEquals("ticket.Ticket Number = 1, Price = 30.00", ticket.toString());
+        assertEquals("Ticket Number = 1, Price = 30.00", ticket.toString());
     }
 
     @Test

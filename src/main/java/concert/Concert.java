@@ -52,7 +52,7 @@ public class Concert {
 
     @Override
     public String toString() {
-        return "concert.Concert{" +
+        return "Concert{" +
                 "performer='" + performer + '\'' +
                 ", available=" + available +
                 ", waitlist=" + waitlist +
