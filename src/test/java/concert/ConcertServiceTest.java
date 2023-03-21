@@ -45,12 +45,12 @@ class ConcertServiceTest {
     @Test
     void displayNonEmpty() {
         concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
-        concertService.addConcert("The Weekend", 5000, LocalDate.of(2023, 3, 16));
+        concertService.addConcert("The Weeknd", 5000, LocalDate.of(2023, 3, 16));
         concertService.displayConcerts();
         assertEquals("Added concert\n" +
                      "Added concert\n" +
                      "Concert{performer='Taylor Swift', available=100, waitlist=0, concertDate=2023-03-15}\n" +
-                     "Concert{performer='The Weekend', available=5000, waitlist=0, concertDate=2023-03-16}",
+                     "Concert{performer='The Weeknd', available=5000, waitlist=0, concertDate=2023-03-16}",
                      outputStreamCaptor.toString().trim());
     }
 

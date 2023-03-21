@@ -61,13 +61,13 @@ class ConcertRepositoryTest {
     @Test
     void getConcertState() {
         // add 3 concerts
-        assertTrue(repository.add(new Concert("The Weekend", 1000, LocalDate.of(2023, 3, 15))));
+        assertTrue(repository.add(new Concert("The Weeknd", 1000, LocalDate.of(2023, 3, 15))));
         assertTrue(repository.add(new Concert("Taylor Swift", 500, LocalDate.of(2023, 3, 16))));
         assertTrue(repository.add(new Concert("Harry Styles", 20000, LocalDate.of(2023, 3, 17))));
         assertEquals(3, repository.getAllConcerts().size());
 
         // confirm each concert was inserted in the correct array position
-        assertEquals("The Weekend", repository.get(0).getPerformer());
+        assertEquals("The Weeknd", repository.get(0).getPerformer());
         assertEquals("Taylor Swift", repository.get(1).getPerformer());
         assertEquals("Harry Styles", repository.get(2).getPerformer());
     }
@@ -87,15 +87,15 @@ class ConcertRepositoryTest {
     @Test
     void findByPerformer() {
         repository.add(new Concert("Taylor Swift", 1000, LocalDate.of(2023, 3, 15)));
-        repository.add(new Concert("The Weekend", 500, LocalDate.of(2023, 3, 17)));
+        repository.add(new Concert("The Weeknd", 500, LocalDate.of(2023, 3, 17)));
 
         Concert c1 = repository.findByPerformer("Taylor Swift");
         assertEquals("Taylor Swift", c1.getPerformer());
         assertEquals(1000, c1.getAvailable());
         assertEquals(0, c1.getWaitlist());
 
-        Concert c2 = repository.findByPerformer("The Weekend");
-        assertEquals("The Weekend", c2.getPerformer());
+        Concert c2 = repository.findByPerformer("The Weeknd");
+        assertEquals("The Weeknd", c2.getPerformer());
         assertEquals(500, c2.getAvailable());
         assertEquals(0, c2.getWaitlist());
 
@@ -108,7 +108,7 @@ class ConcertRepositoryTest {
     @Test
     void caseInsensitiveFind() {
         repository.add(new Concert("Taylor Swift", 1000, LocalDate.of(2023, 3, 15)));
-        repository.add(new Concert("The Weekend", 500, LocalDate.of(2023, 3, 16)));
+        repository.add(new Concert("The Weeknd", 500, LocalDate.of(2023, 3, 16)));
 
         Concert c1 = repository.findByPerformer("TAYLOR swift");
         assertEquals("Taylor Swift", c1.getPerformer());
