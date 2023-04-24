@@ -35,6 +35,7 @@ class ConcertRepositoryTest {
         Concert c = repository.get(0);
         assertEquals("Artist0", c.getPerformer());
         assertEquals(1000, c.getAvailable());
+        assertEquals(0, c.getWaitlist());
 
     }
 
@@ -54,7 +55,7 @@ class ConcertRepositoryTest {
             assertEquals(i + 1, repository.getAllConcerts().size());
         }
 
-        // confirm the size did not increase
+        // confirm the size is 5
         assertEquals(5, repository.getAllConcerts().size());
     }
 

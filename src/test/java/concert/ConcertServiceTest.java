@@ -32,7 +32,7 @@ class ConcertServiceTest {
         concertService.addConcert("Taylor Swift" , 100, LocalDate.of(2023, 3, 15));
         concertService.addConcert("Taylor Swift" , 200, LocalDate.of(2023, 3, 15));
         assertEquals("Added concert\n" +
-                        "concert.Concert with Taylor Swift already exists. Unable to add concert",
+                        "Concert with Taylor Swift already exists. Unable to add concert",
                 outputStreamCaptor.toString().trim());
     }
 
